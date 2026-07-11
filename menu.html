@@ -1,44 +1,227 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <link rel="stylesheet" href="style.css">
-    <title>Menu - Mamanpaz Maastricht</title>
+  <link rel="stylesheet" href="style.css">
+        <title>Mamanpaz Iraans Restaurant</title>
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link href="https://fonts.googleapis.com/css2?family=Geist:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
   </head>
-  <body>
-    <!-- Header (copied from index.html) -->
-    <div class="header">
-      <img class="logo" src="icons/logomamanpaz.PNG" alt="logo">
-      <div class="site-title">
-        <p class="site-name">Mamanpaz Maastricht</p>
-        <p class="site-sub">Authentic Persian Restaurant</p>
-      </div>
-      <img class="logo" src="icons/logomamanpaz.PNG" alt="logo">
-    </div>
 
-    <!-- Left navigation (copied from index.html) -->
-    <div class="left-div">
-      <a href="menu.html" aria-current="page"><button class="menu"><img class="button-icon" src="icons/menu.png" alt="Menu icon"><span>Menu</span></button></a>
-      <button class="events"><img class="button-icon" src="icons/events.png" alt="Events icon"><span>Events & Arrangements</span></button>
-      <button class="contactus"><img class="button-icon" src="icons/contactus.png" alt="Contact icon"><span>Contact us</span></button>
-      <button class="aboutus"><img class="button-icon" src="icons/aboutus.png" alt="About icon"><span>About us</span></button>
-    </div>
+  <body class="menu-page">
+     <div class="header">
+        <img class="logo" src="icons/logomamanpaz.PNG">
+        <div class="site-title">
+          <p class="site-name">Mamanpaz Maastricht</p>
+          <p class="site-sub">Authentic Persian Restaurant</p>
+        </div>
+        <img class="logo" src="icons/logomamanpaz.PNG">
+      </div>
 
-    <!-- Menu content (simple themed layout) -->
-    <div class="menu-page">
-      <h2 class="menu-title">Our Menu</h2>
-      <div class="menu-list">
-        <div class="menu-item"><div class="item-name">Chelo Kabab (Chicken)</div><div class="item-price">€16</div></div>
-        <div class="menu-item"><div class="item-name">Ghorme Sabzi (Stew)</div><div class="item-price">€14</div></div>
-        <div class="menu-item"><div class="item-name">Fesenjan (Walnut & Pomegranate)</div><div class="item-price">€17</div></div>
-        <div class="menu-item"><div class="item-name">Khoresht-e Bademjan (Eggplant Stew)</div><div class="item-price">€15</div></div>
-        <div class="menu-item"><div class="item-name">Vegetarian Rice Plate</div><div class="item-price">€12</div></div>
-        <div class="menu-item"><div class="item-name">Dessert: Persian Saffron Ice Cream</div><div class="item-price">€6</div></div>
+       <div class="left-div">
+        <a href="index.html" aria-label="Home"><button class="home"><img class="button-icon" src="icons/home.png" alt="Home icon"><span>Home</span></button></a>
+        <a href="menu.html" aria-label="Menu"><button class="menu"><img class="button-icon" src="icons/menu.png" alt="Menu icon"><span>Menu</span></button></a>
+        <button class="events"><img class="button-icon" src="icons/events.png" alt="Events icon"><span>Events & Arrangements</span></button>
+        <button class="contactus"><img class="button-icon" src="icons/contactus.png" alt="Contact icon"><span>Contact us</span></button>
+        <button class="aboutus"><img class="button-icon" src="icons/aboutus.png" alt="About icon"><span>About us</span></button>
       </div>
-      <div style="text-align:center; margin-top:18px;">
-        <a href="index.html"><button class="hero-button2">Back to Home</button></a>
+
+      <div class="center-panel">
+        <h2>Online Menu Of Mamanpaz Maastricht</h2>
+        <p class="panel-intro">PERSIAN / IRANIAN FOOD DELIVERY IN MAASTRICHT</p>
+
+        <section class="menu-section">
+          <h3>کباب (Kebab)</h3>
+          <div class="menu-item">
+            <div class="menu-item-row">
+              <div class="menu-item-title-wrap">
+                <img class="menu-item-image" src="menu/kebab-koobideh.PNG" alt="چلوکباب کوبیده" loading="lazy">
+                <strong>چلوکباب کوبیده (kebab koobideh)</strong>
+              </div>
+              <span class="price">19,50 EUR <button class="order-btn">+</button></span>
+            </div>
+            <div class="menu-desc">Twee spiesen van gegrild gekruid lams- en kalfsgehakt, geserveerd met gewone en saffraanrijst, gegrilde tomaat en gegrilde peper.</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-row">
+              <div class="menu-item-title-wrap">
+                <img class="menu-item-image" src="menu/joojeh-kebab.PNG" alt="جوجه کباب" loading="lazy">
+                <strong>جوجه کباب (joojeh kebab)</strong>
+              </div>
+              <span class="price">19,50 EUR <button class="order-btn">+</button></span>
+            </div>
+            <div class="menu-desc">Twee spiesen van gegrilde gekruide kipfilet met gewone en saffraan rijst, gegrilde tomaat en peper.</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-row">
+              <div class="menu-item-title-wrap">
+                <img class="menu-item-image" src="menu/kebab-mix.PNG" alt="چلوکباب میکس" loading="lazy">
+                <strong>چلوکباب میکس با گوجه (جوجه و کوبیده) (kebab mix)</strong>
+              </div>
+              <span class="price">19,50 EUR <button class="order-btn">+</button></span>
+            </div>
+            <div class="menu-desc">Gegrilde spies van lams- en kalfsgehakt en gegrilde spies van kipfilet, met gewone rijst en saffraanrijst, gegrilde tomaat en peper.</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-row">
+              <div class="menu-item-title-wrap">
+                <strong>چلو کباب برگ (kebab barg)</strong>
+              </div>
+              <span class="price">27,50 EUR <button class="order-btn">+</button></span>
+            </div>
+            <div class="menu-desc">Twee spiesen van gegrild mals lamsvlees met gewone en saffraanrijst, gegrilde tomaat en peper.</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-row">
+              <div class="menu-item-title-wrap">
+                <img class="menu-item-image" src="menu/kebab-vaziri.PNG" alt="چلوکباب وزیری" loading="lazy">
+                <strong>چلوکباب وزیری (kebab vaziri)</strong>
+              </div>
+              <span class="price">25,50 EUR <button class="order-btn">+</button></span>
+            </div>
+            <div class="menu-desc">Spies gegrilde kipfilet en spies gegrilde mals lamsvlees met gewone en saffraan rijst, gegrilde tomaat en peper.</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-row">
+              <div class="menu-item-title-wrap">
+                <img class="menu-item-image" src="menu/kebab-soltani.PNG" alt="چلوکباب سلطانی" loading="lazy">
+                <strong>چلوکباب سلطانی (kebab soltani)</strong>
+              </div>
+              <span class="price">25,50 EUR <button class="order-btn">+</button></span>
+            </div>
+            <div class="menu-desc">Gegrilde spies van lams- en kalfsgehakt en spies gegrilde mals lamsvlees met normale en saffraan rijst, gegrilde tomaat en peper.</div>
+          </div>
+        </section>
+
+        <section class="menu-section">
+          <h3>خورش (Stews)</h3>
+          <div class="menu-item">
+            <div class="menu-item-row">
+              <div class="menu-item-title-wrap">
+                <img class="menu-item-image" src="menu/khoresh-ghorme-sabzi.PNG" alt="قورمه سبزی" loading="lazy">
+                <strong>چلو خورش قورمه سبزی (khoresh ghorme sabzi)</strong>
+              </div>
+              <span class="price">18,50 EUR <button class="order-btn">+</button></span>
+            </div>
+            <div class="menu-desc">Ghormeh sabzi met normale en saffraan rijst. Ghorme sabzi gemaakt met: peterselie, koriander, prei en spinazie met stukjes kalfvlees en rode bonen.</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-row">
+              <div class="menu-item-title-wrap">
+                <img class="menu-item-image" src="menu/khoresh-gheime.PNG" alt="قیمه" loading="lazy">
+                <strong>چلو خورش قیمه (khoresh gheime)</strong>
+              </div>
+              <span class="price">18,50 EUR <button class="order-btn">+</button></span>
+            </div>
+            <div class="menu-desc">Gheime met normale en saffraan rijst. Gheime gemaakt met: tomatensaus van spliterwten en gedroogde citroen met stukjes kalfvlees.</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-row">
+              <div class="menu-item-title-wrap">
+                <img class="menu-item-image" src="menu/khoresh-fesenjoon.PNG" alt="فسنجون" loading="lazy">
+                <strong>چلو خورش فسنجون ملس با گوشت (khoresh fesenjoon)</strong>
+              </div>
+              <span class="price">19,50 EUR <button class="order-btn">+</button></span>
+            </div>
+            <div class="menu-desc">Alleen op woendag! Zoetzure saus van gemalen walnoten en granaatappelstroop met gehaktballen met normale en saffraan rijst.</div>
+          </div>
+        </section>
+
+        <section class="menu-section">
+          <h3>پلو (Rice)</h3>
+          <div class="menu-item">
+            <div class="menu-item-row">
+              <div class="menu-item-title-wrap">
+                <img class="menu-item-image" src="menu/baghali-polo-ba-goosht.PNG" alt="باقالی پلو" loading="lazy">
+                <strong>باقالی پلو با گوشت (baghali polo ba goosht)</strong>
+              </div>
+              <span class="price">18,50 EUR <button class="order-btn">+</button></span>
+            </div>
+            <div class="menu-desc">Alleen op dinsdag beschikbaar! Rijst gemengd met tuinbonen en kruiden met stukjes langzaam gestoofd kalfsvlees.</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-row">
+              <div class="menu-item-title-wrap">
+                <img class="menu-item-image" src="menu/adas-polo.PNG" alt="عدس پلو" loading="lazy">
+                <strong>عدس پلو (adas polo)</strong>
+              </div>
+              <span class="price">16,50 EUR <button class="order-btn">+</button></span>
+            </div>
+            <div class="menu-desc">Alleen op donderdag beschikbaar! Normale en saffraan rijst gemengd met linzengranen met gehakte vlees, rozijnen en gebakken ui.</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-row">
+              <div class="menu-item-title-wrap">
+                <strong>لوبیا پلو (loobia polo)</strong>
+              </div>
+              <span class="price">16,50 EUR <button class="order-btn">+</button></span>
+            </div>
+            <div class="menu-desc">Alleen op zaterdag beschikbaar! Rijst met bonen gemengd met tomatenpuree en kruiden met stukjes kalfvlees.</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-row">
+              <div class="menu-item-title-wrap">
+                <strong>زرشک پلو با مرغ (zereshk polo ba morgh)</strong>
+              </div>
+              <span class="price">18,50 EUR <button class="order-btn">+</button></span>
+            </div>
+            <div class="menu-desc">Alleen op zondag beschikbaar! Normale en saffraan rijst met berberis, met een heel stuk kippenbout gestoofd in saffraan en tomatensaus.</div>
+          </div>
+        </section>
+
+        <section class="menu-section">
+          <h3>کنار غذا (Side)</h3>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/mast-mosir.PNG" alt="ماست موسیر" loading="lazy"><strong>ماست موسیر (mast moosir)</strong></div><span class="price">4,75 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Yoghurt met mosir (knoflookui) smaak.</div></div>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/mast-o-khiar.PNG" alt="ماست و خیار" loading="lazy"><strong>ماست و خیار (mast o khiar)</strong></div><span class="price">4,75 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Yoghurt met komkommer en kruiden.</div></div>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><strong>بورانی ماست و بادمجان (borani mast o bademjoon)</strong></div><span class="price">4,75 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Borani-yoghurt met gegrilde aubergine.</div></div>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/salad-shirazi.PNG" alt="سالاد شیرازی" loading="lazy"><strong>سالاد شیرازی (salad shirazi)</strong></div><span class="price">4,75 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Salade met gesneden komkommer, tomaat en ui op smaak gebracht met citroen.</div></div>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/torshi-makhloot.PNG" alt="ترشی مخلوط" loading="lazy"><strong>ترشی مخلوط با سرکه خانگی (torshi makhloot)</strong></div><span class="price">4,75 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Thuisgemaakte torshi vermengd met zelfgemaakte azijn.</div></div>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/augurk.PNG" alt="خیارشور" loading="lazy"><strong>خیارشور (augurk)</strong></div><span class="price">3,75 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Kleine bakje van augurken.</div></div>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/torshi-goje.PNG" alt="ترشی گوجه" loading="lazy"><strong>ترشی گوجه خونگی (torshi gojeh)</strong></div><span class="price">4,75 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Thuisgemaakte torshi mix met verse tomatenpuree.</div></div>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/zeytoon-parvardeh.PNG" alt="زیتون پرورده" loading="lazy"><strong>زیتون پرورده (zeytoon parvardeh)</strong></div><span class="price">5,00 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Olijven gemarineerd in een saus mix van granaatappel, walnoten en specerijen.</div></div>
+        </section>
+
+        <section class="menu-section">
+          <h3>پیش غذا (Starters)</h3>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/kashke-bademjoon.PNG" alt="کشک بادمجون" loading="lazy"><strong>کشک بادمجون (kashke bademjoon)</strong></div><span class="price">12,99 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Mix van gefrituurde aubergine, kashk, knoflook, ui en munt.</div></div>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/mirza-ghasemi.PNG" alt="میرزا قاسمی" loading="lazy"><strong>میرزا قاسمی (mirza ghasemi)</strong></div><span class="price">12,99 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Mix van gegrilde aubergine, ui, knoflook, tomatenpuree en ei.</div></div>
+        </section>
+
+        <section class="menu-section">
+          <h3>ساندویچ (Wraps)</h3>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/kebab-koobideh.PNG" alt="ساندویچ کباب کوبیده" loading="lazy"><strong>ساندویچ کباب کوبیده (kebab koobideh wrap)</strong></div><span class="price">10,50 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Een wrap met een spies kebab koobideh (gehakt lam en kalfsvlees), gegrilde tomaat, sla, komkommer, ui en peterselie.</div></div>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/joojeh-kebab-wrap.PNG" alt="ساندویچ جوجه کباب" loading="lazy"><strong>ساندویچ جوجه کباب (Joojeh kebab wrap)</strong></div><span class="price">10,50 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Een wrap met een spies Joojeh kebab (gegrilde kipfilet), gegrilde tomaat, sla, komkommer, ui en peterselie.</div></div>
+        </section>
+
+        <section class="menu-section">
+          <h3>دسر (Desserts)</h3>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/faloodeh.PNG" alt="فالوده" loading="lazy"><strong>فالوده (faloodeh)</strong></div><span class="price">5,00 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Perzische dessert van dunne rijstnoedels in een zoete siroop en rozenwater.</div></div>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/saffraan-ijsje.PNG" alt="بستنی سنتی" loading="lazy"><strong>بستنی سنتی (saffraan ijsje)</strong></div><span class="price">5,00 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Romig ijs met de delicate smaken van saffraan en hint van rozenwater.</div></div>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><strong>بستنی شیریخ (shiryakh ijsje)</strong></div><span class="price">5,00 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">IJsje gemaakt van gecondenseerde melk, suiker en vanille met een zachte textuur en een lichte hint van rozenwater.</div></div>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/baklava.PNG" alt="باقلوا" loading="lazy"><strong>باقلوا (baklava)</strong></div><span class="price">0,75 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Een combinatie van filodeeg, noten en honing in laagjes gebakken.</div></div>
+        </section>
+
+        <section class="menu-section">
+          <h3>نوشیدنی (Drinks)</h3>
+          <div class="menu-item"><div class="menu-item-row"><strong>دوغ ایرانی (doogh)</strong><span class="price">2,50 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Iraanse yoghurt drankje.</div></div>
+          <div class="menu-item"><div class="menu-item-row"><strong>کوکا کولا</strong><span class="price">2,50 EUR <button class="order-btn">+</button></span></div></div>
+          <div class="menu-item"><div class="menu-item-row"><strong>اسپرایت</strong><span class="price">2,50 EUR <button class="order-btn">+</button></span></div></div>
+          <div class="menu-item"><div class="menu-item-row"><strong>فانتا</strong><span class="price">2,50 EUR <button class="order-btn">+</button></span></div></div>
+          <div class="menu-item"><div class="menu-item-row"><strong>کولا زیرو</strong><span class="price">2,50 EUR <button class="order-btn">+</button></span></div></div>
+        </section>
+
+        <section class="menu-section">
+          <h3>سس (Sauces)</h3>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/ketchup.PNG" alt="کچاپ" loading="lazy"><strong>سس کچاپ (Ketchup)</strong></div><span class="price">2,50 EUR <button class="order-btn">+</button></span></div></div>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/mayonnaise.PNG" alt="مایونز" loading="lazy"><strong>سس مایونز (Mayonnaise)</strong></div><span class="price">2,50 EUR <button class="order-btn">+</button></span></div></div>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/knoflooksaus.PNG" alt="سس سیر" loading="lazy"><strong>سس سیر (Knoflooksaus)</strong></div><span class="price">2,50 EUR <button class="order-btn">+</button></span></div></div>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/chilisaus.PNG" alt="سس فلفل قرمز" loading="lazy"><strong>سس فلفل قرمز (Chilisaus)</strong></div><span class="price">2,50 EUR <button class="order-btn">+</button></span></div></div>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/sweet-chilisaus.PNG" alt="سس فلفل قرمز شیرین" loading="lazy"><strong>سس فلفل قرمز شیرین (Sweet chilisaus)</strong></div><span class="price">2,50 EUR <button class="order-btn">+</button></span></div></div>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/mangosaus.PNG" alt="سس انبه" loading="lazy"><strong>سس انبه (Mangosaus)</strong></div><span class="price">2,50 EUR <button class="order-btn">+</button></span></div></div>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/spicy-tomatensaus.PNG" alt="سس گوجه تند" loading="lazy"><strong>سس گوجه تند (Spicy tomatensaus)</strong></div><span class="price">2,50 EUR <button class="order-btn">+</button></span></div></div>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/avocado-saus.PNG" alt="سس آووکادو" loading="lazy"><strong>سس آووکادو (Avocado saus)</strong></div><span class="price">2,50 EUR <button class="order-btn">+</button></span></div></div>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/bbq-saus.PNG" alt="سس باربیکیو" loading="lazy"><strong>سس باربیکیو (BBQ saus)</strong></div><span class="price">2,50 EUR <button class="order-btn">+</button></span></div></div>
+        </section>
       </div>
-    </div>
   </body>
 </html>

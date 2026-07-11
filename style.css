@@ -4,7 +4,27 @@ html, body {
   padding: 0;
 }
 
-/* Ensure background video sits behind all page content */
+button, a {
+  outline: none;
+  text-decoration: none;
+}
+
+button:focus,
+a:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+body.menu-page {
+  min-height: 100vh;
+  background-color: #2b060a;
+  background-image: url("./backgroundpics/background-menu.JPEG");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
 #background-vid{
   position: fixed;
   inset: 0;
@@ -27,10 +47,10 @@ html, body {
   align-items: center;
   position: fixed;
   justify-content: space-between;
-  height: 150px;
-  top: 20px;
-  left: 20px;
-  right: 20px;
+  height: 120px;
+  top: 16px;
+  left: 16px;
+  right: 16px;
   background: rgba(255,255,255,0.06);
   border: 1px solid rgba(255,255,255,0.12);
   backdrop-filter: blur(12px);
@@ -43,9 +63,9 @@ html, body {
   gap: 16px;
 }
 .logo{
-  height: 120px;
+  height: 90px;
   width: auto;
-  max-height: 120px;
+  max-height: 90px;
   display: block;
 }
 
@@ -61,14 +81,14 @@ html, body {
   font-weight: 700;
   letter-spacing: 0.6px;
   line-height: 1.05;
-  font-size: clamp(22px, 3vw, 38px);
+  font-size: clamp(18px, 2.4vw, 28px);
 }
 .site-sub{
   margin: 0;
-  font-size: clamp(12px, 1.4vw, 16px);
+  font-size: clamp(10px, 1.1vw, 13px);
   opacity: 0.9;
   font-weight: 400;
-  letter-spacing: 10px;
+  letter-spacing: 8px;
 }
 .site-name{
   font-weight: 700;
@@ -79,27 +99,29 @@ html, body {
   flex-direction: column;
   position: fixed;
   z-index: 10;
-  height: 560px;
-  width: 240px;
-  top: 200px;
-  left: 30px;
+  height: 680px;
+  width: 220px;
+  top: 160px;
+  left: 24px;
   background: rgba(255,255,255,0.06);
   border: 1px solid rgba(255,255,255,0.12);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   box-shadow: 0 30px 70px rgba(5,5,5,0.6);
   border-radius: 24px;
-  padding: 8px 0;
+  padding: 12px;
+  box-sizing: border-box;
 }
 .left-div button{
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  width: calc(100% - 24px);
-  margin: 10px 12px;
-  padding: 18px 12px;
+  gap: 8px;
+  width: 100%;
+  margin: 8px 0;
+  padding: 14px 10px;
+  box-sizing: border-box;
   background: rgba(255,255,255,0.10);
   border: 1px solid rgba(255,255,255,0.18);
   color: #fff;
@@ -121,8 +143,8 @@ html, body {
   transform: translateY(-1px);
 }
 .button-icon{
-  width: 52px;
-  height: 52px;
+  width: 56px;
+  height: 56px;
   object-fit: contain;
 }
 .main-page{
@@ -141,6 +163,130 @@ html, body {
   color: #fff;
   z-index: 5;
   overflow: auto;
+}
+
+.center-panel{
+  position: relative;
+  margin: 170px 16px 40px 300px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 30px 70px rgba(5,5,5,0.6);
+  border-radius: 24px;
+  padding: 28px;
+  color: #fff;
+  z-index: 4;
+  overflow: visible;
+}
+
+.center-panel h2,
+.center-panel p{
+  margin: 0 0 12px;
+  font-family: Geist, sans-serif;
+}
+
+.center-panel h2 {
+  font-size: 2rem;
+  letter-spacing: 0.5px;
+}
+
+.center-panel h3 {
+  margin: 0 0 10px;
+  padding: 10px 14px;
+  font-size: 1.15rem;
+  letter-spacing: 0.4px;
+  color: #f7d8a6;
+  font-family: Geist, sans-serif;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px;
+  display: inline-block;
+}
+
+.panel-intro {
+  font-size: 0.95rem;
+  opacity: 0.9;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.menu-section {
+  margin-bottom: 20px;
+  padding: 14px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+}
+
+.menu-item {
+  margin-bottom: 12px;
+  padding: 12px 0;
+  line-height: 1.6;
+  font-size: 1.08rem;
+  color: rgba(255,255,255,0.92);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.menu-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.menu-item-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.menu-item-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.menu-item-image {
+  width: 180px;
+  height: auto;
+  max-height: 160px;
+  object-fit: contain;
+  flex-shrink: 0;
+  display: block;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.price {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  color: #f7d8a6;
+  font-size: 1.08rem;
+  font-weight: 600;
+}
+
+.order-btn {
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.14);
+  color: white;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.menu-desc {
+  margin-top: 6px;
+  font-size: 1rem;
+  opacity: 0.9;
 }
 /* Make main-page a column flex container so we can center the hero actions */
 .main-page{
@@ -205,47 +351,4 @@ html, body {
   background: rgba(255,255,255,0.16);
   border-color: rgba(255,255,255,0.24);
   transform: translateY(-1px);
-}
-
-/* Menu page styles: keep the same frosted theme but without background video */
-.menu-page{
-  max-width: 1000px;
-  margin: 140px auto;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.10);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 30px 70px rgba(5,5,5,0.6);
-  border-radius: 20px;
-  padding: 28px;
-  color: #fff;
-  z-index: 5;
-}
-.menu-title{
-  margin: 0 0 12px 0;
-  font-size: 28px;
-  text-align: center;
-  font-weight: 700;
-}
-.menu-list{
-  display: grid;
-  grid-template-columns: repeat(auto-fit,minmax(260px,1fr));
-  gap: 12px;
-}
-.menu-item{
-  background: rgba(255,255,255,0.02);
-  border: 1px solid rgba(255,255,255,0.06);
-  padding: 14px 16px;
-  border-radius: 12px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.item-name{
-  font-size: 16px;
-  color: rgba(255,255,255,0.95);
-}
-.item-price{
-  font-weight: 600;
-  color: rgba(255,255,255,0.9);
 }
