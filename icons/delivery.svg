@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Delivery</title>
+  <desc id="desc">Takeaway food bag</desc>
+  <path d="M16 22h32l4 34H12l4-34Z" fill="none" stroke="black" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M23 22v-4a9 9 0 0 1 18 0v4M20 32h24" fill="none" stroke="black" stroke-width="4" stroke-linecap="round"/>
+  <path d="M25 41h14" fill="none" stroke="black" stroke-width="4" stroke-linecap="round"/>
+</svg>

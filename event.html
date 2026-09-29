@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Events & Arrangements | MamanPaz Maastricht</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  </head>
+  <body class="menu-page events-page">
+    <div class="header">
+      <img class="logo" src="icons/logomamanpaz.PNG" alt="MamanPaz logo">
+      <div class="site-title">
+        <p class="site-name">Mamanpaz Maastricht</p>
+        <p class="site-sub">Authentic Persian Restaurant</p>
+      </div>
+      <img class="logo" src="icons/logomamanpaz.PNG" alt="MamanPaz logo">
+    </div>
+
+    <div class="left-div">
+      <a href="index.html" aria-label="Home"><button class="home" type="button"><img class="button-icon" src="icons/home.png" alt="Home icon"><span>Home</span></button></a>
+      <a href="menu.html" aria-label="Menu"><button class="menu" type="button"><img class="button-icon" src="icons/menu.png" alt="Menu icon"><span>Menu</span></button></a>
+      <a href="event.html" aria-label="Events and arrangements"><button class="events" type="button"><img class="button-icon" src="icons/events.png" alt="Events icon"><span>Events & Arrangements</span></button></a>
+      <a href="contactus.html" aria-label="Contact us"><button class="contactus" type="button"><img class="button-icon" src="icons/contactus.png" alt="Contact icon"><span>Contact us</span></button></a>
+      <a href="aboutus.html" aria-label="About us"><button class="aboutus" type="button"><img class="button-icon" src="icons/aboutus.png" alt="About icon"><span>About us</span></button></a>
+    </div>
+
+    <main class="events-content" aria-labelledby="events-title">
+      <div class="events-layout">
+        <article class="events-copy">
+        <p class="events-kicker">Celebrate with us</p>
+        <h1 id="events-title">Events &amp; Arrangements at Mamanpaz</h1>
+        <p>Make your special moments even more memorable at Mamanpaz! Whether you're celebrating a birthday, hosting a family gathering, or planning another special occasion, we're here to make it a celebration to remember.</p>
+
+        <div class="events-gallery" aria-label="Celebrations at MamanPaz">
+          <img src="events/event-01.png" alt="Guests enjoying a celebration at MamanPaz" loading="lazy">
+          <img src="events/event-02.png" alt="A special event at MamanPaz" loading="lazy">
+          <img src="events/event-03.png" alt="Persian food served at a MamanPaz event" loading="lazy">
+          <img src="events/event-04.png" alt="A table prepared for a celebration" loading="lazy">
+          <img src="events/event-05.png" alt="A festive gathering at MamanPaz" loading="lazy">
+        </div>
+
+        <section>
+          <h2>Private Events &amp; Restaurant Bookings</h2>
+          <p>Looking for a place to celebrate with your friends, family, or colleagues? You can book our entire restaurant for your birthday, private party, or special event. Get in touch with us to discuss your plans, and we'll do our best to make your celebration perfect.</p>
+        </section>
+
+        <section>
+          <h2>Large Orders for Your Party</h2>
+          <p>Planning a party at home or at another location? You can also send us an inquiry for large orders. Whether it's a family gathering, birthday party, or another celebration, we'd be happy to help make sure your guests enjoy delicious food from MamanPaz.</p>
+        </section>
+
+        <section>
+          <h2>Birthday Surprises</h2>
+          <p>Celebrating your birthday at Mamanpaz? Let us know when making your reservation or give us a call. We'll take care of the birthday surprise and help make your special day even more memorable!</p>
+        </section>
+
+        <p class="events-closing">For bookings, private events, or large orders, feel free to contact us. We look forward to celebrating with you!</p>
+        </article>
+
+        <aside class="events-form-card">
+          <p class="events-kicker">Start planning</p>
+          <h2>Tell us about your celebration</h2>
+          <form class="events-form" action="#" method="post">
+            <label for="first-name">First name</label>
+            <input id="first-name" name="first-name" type="text" autocomplete="given-name" required>
+
+            <label for="email">Email address</label>
+            <input id="email" name="email" type="email" autocomplete="email" required>
+
+            <label for="phone">Phone number</label>
+            <input id="phone" name="phone" type="tel" autocomplete="tel" required>
+
+            <label for="celebration-purpose">Purpose of celebration</label>
+            <select id="celebration-purpose" name="celebration-purpose" required>
+              <option value="" selected disabled>Select an occasion</option>
+              <option value="birthday">Birthday</option>
+              <option value="family-gathering">Family gathering</option>
+              <option value="private-event">Private event</option>
+              <option value="large-order">Large order</option>
+              <option value="other">Other celebration</option>
+            </select>
+
+            <label for="event-message">Tell us more</label>
+            <textarea id="event-message" name="event-message" rows="6" placeholder="Share your preferred date, number of guests, and any details you have in mind."></textarea>
+
+            <button class="events-submit" type="submit">Send inquiry</button>
+          </form>
+        </aside>
+      </div>
+    </main>
+
+    <div class="confirmation-modal" id="confirmationModal" role="dialog" aria-modal="true" aria-labelledby="confirmation-title" aria-describedby="confirmation-message" hidden>
+      <div class="confirmation-card">
+        <button class="confirmation-close" id="confirmationClose" type="button" aria-label="Close confirmation">&times;</button>
+        <div class="confirmation-mark" aria-hidden="true">&#10003;</div>
+        <p class="events-kicker">Inquiry received</p>
+        <h2 id="confirmation-title">Thank you, <span id="confirmationName">there</span>!</h2>
+        <p id="confirmation-message">Your event inquiry has been received. We will get in touch with you soon to discuss your celebration.</p>
+        <button class="events-submit" id="confirmationDone" type="button">Done</button>
+      </div>
+    </div>
+
+    <script>
+      (function(){
+        const form = document.querySelector('.events-form');
+        const modal = document.getElementById('confirmationModal');
+        const nameEl = document.getElementById('confirmationName');
+        const closeButton = document.getElementById('confirmationClose');
+        const doneButton = document.getElementById('confirmationDone');
+        let lastFocusedElement;
+
+        function closeConfirmation(){
+          modal.hidden = true;
+          if(lastFocusedElement) lastFocusedElement.focus();
+        }
+
+        form.addEventListener('submit', async function(event){
+          event.preventDefault();
+          if(!form.checkValidity()){
+            form.reportValidity();
+            return;
+          }
+          const submitButton = form.querySelector('[type="submit"]');
+          submitButton.disabled = true;
+          try {
+            const response = await fetch('/api/event-inquiries', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                name: document.getElementById('first-name').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                phone: document.getElementById('phone').value.trim(),
+                purpose: document.getElementById('celebration-purpose').value,
+                message: document.getElementById('event-message').value.trim()
+              })
+            });
+            if (!response.ok) throw new Error((await response.json().catch(() => ({}))).error || 'We could not send your inquiry.');
+          } catch (error) {
+            alert(error.message || 'The inquiry service is unavailable. Please try again later.');
+            submitButton.disabled = false;
+            return;
+          }
+          lastFocusedElement = document.activeElement;
+          nameEl.textContent = document.getElementById('first-name').value.trim();
+          modal.hidden = false;
+          closeButton.focus();
+        });
+
+        closeButton.addEventListener('click', closeConfirmation);
+        doneButton.addEventListener('click', function(){
+          form.reset();
+          form.querySelector('[type="submit"]').disabled = false;
+          closeConfirmation();
+        });
+        modal.addEventListener('click', function(event){
+          if(event.target === modal) closeConfirmation();
+        });
+        document.addEventListener('keydown', function(event){
+          if(event.key === 'Escape' && !modal.hidden) closeConfirmation();
+        });
+      })();
+    </script>
+    <script src="site.js"></script>
+  </body>
+</html>

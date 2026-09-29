@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Staff Dashboard | Mamanpaz Maastricht</title>
+  </head>
+  <body class="menu-page admin-page">
+    <main class="admin-shell">
+      <section class="admin-card" id="adminLogin">
+        <p class="events-kicker">Staff only</p>
+        <h1>MamanPaz Staff Login</h1>
+        <p class="admin-warning">Use the staff account configured on the server.</p>
+        <form id="adminLoginForm" class="admin-form">
+          <label for="adminUsername">Username or email</label>
+          <input id="adminUsername" type="text" autocomplete="username" required>
+          <label for="adminPassword">Password</label>
+          <input id="adminPassword" type="password" autocomplete="current-password" required>
+          <button class="events-submit" type="submit">Log in</button>
+          <p id="loginMessage" class="admin-message" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <section class="admin-card" id="adminDashboard" hidden>
+        <div class="admin-heading">
+          <div>
+            <p class="events-kicker">Staff dashboard</p>
+            <h1>Restaurant control</h1>
+          </div>
+          <button id="logoutAdmin" class="admin-secondary" type="button">Log out</button>
+        </div>
+        <nav class="admin-tabs" aria-label="Dashboard sections">
+          <button class="admin-tab active" data-panel="overviewPanel" type="button">Dashboard</button>
+          <button class="admin-tab" data-panel="menuPanel" type="button">Menu Management</button>
+          <button class="admin-tab" data-panel="ordersPanel" type="button">Orders</button>
+          <button class="admin-tab" data-panel="reservationsPanel" type="button">Reservations</button>
+          <button class="admin-tab" data-panel="inquiriesPanel" type="button">Event inquiries</button>
+          <button class="admin-tab" data-panel="deliveryPanel" type="button">Delivery Availability</button>
+        </nav>
+
+        <section id="overviewPanel" class="admin-panel">
+          <div class="admin-overview-grid">
+            <div class="admin-stat"><span>Menu items</span><strong id="menuCount">0</strong></div>
+            <div class="admin-stat"><span>Unavailable</span><strong id="unavailableCount">0</strong></div>
+            <div class="admin-stat"><span>New orders</span><strong id="newOrderCount">0</strong></div>
+            <div class="admin-stat"><span>Today reservations</span><strong id="todayReservationCount">0</strong></div>
+          </div>
+          <p id="overviewMessage" class="admin-summary">Loading dashboard...</p>
+        </section>
+
+        <section id="menuPanel" class="admin-panel" hidden>
+          <div class="admin-section-heading"><div><h2>Menu Management</h2><p class="admin-summary">Edit prices, availability, categories, descriptions, and display order.</p></div><button id="newMenuItem" class="admin-secondary" type="button">Add menu item</button></div>
+          <div id="menuList" class="admin-table-wrap"></div>
+          <form id="menuForm" class="admin-form admin-tool" hidden>
+            <h2 id="menuFormTitle">Add menu item</h2>
+            <input id="menuId" type="hidden">
+            <label for="menuName">Name</label><input id="menuName" required>
+            <label for="menuDescription">Description</label><textarea id="menuDescription" rows="3"></textarea>
+            <label for="menuPrice">Price in EUR</label><input id="menuPrice" type="number" min="0" step="0.01" required>
+            <label for="menuCategory">Category</label><select id="menuCategory" required><option value="kebab">Kebab</option><option value="stews">Stews</option><option value="rice">Rice</option><option value="side">Sides</option><option value="starters">Starters</option><option value="wraps">Wraps</option><option value="desserts">Desserts</option><option value="drinks">Drinks</option><option value="sauces">Sauces</option></select>
+            <label for="menuImage">Image path</label><input id="menuImage" placeholder="menu/item.png">
+            <label for="menuSortOrder">Display order</label><input id="menuSortOrder" type="number" min="0" step="1" value="0">
+            <label class="admin-toggle"><input id="menuAvailable" type="checkbox" checked> Available on public menu</label>
+            <div class="admin-form-actions"><button class="events-submit" type="submit">Save item</button><button id="cancelMenu" class="admin-secondary" type="button">Cancel</button></div>
+            <p id="menuMessage" class="admin-message" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section id="ordersPanel" class="admin-panel" hidden><h2>Orders</h2><div id="ordersList" class="admin-table-wrap"></div></section>
+        <section id="reservationsPanel" class="admin-panel" hidden><h2>Reservations</h2><div id="reservationsList" class="admin-table-wrap"></div></section>
+        <section id="inquiriesPanel" class="admin-panel" hidden><h2>Event inquiries</h2><div id="inquiriesList" class="admin-table-wrap"></div></section>
+        <section id="deliveryPanel" class="admin-panel" hidden><h2>Delivery Availability</h2><div class="admin-tool"><label class="admin-toggle"><input id="deliveryOpen" type="checkbox"> Delivery is open</label><p class="admin-summary">Turning delivery off prevents new delivery checkout selections while pickup remains available.</p><button id="saveDelivery" class="events-submit" type="button">Save delivery status</button><p id="deliveryMessage" class="admin-message" aria-live="polite"></p></div></section>
+      </section>
+    </main>
+    <script src="admin.js"></script>
+  </body>
+</html>

@@ -1,6 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Explore the MamanPaz Maastricht menu: authentic Iranian dishes, sides, desserts and drinks.">
   <link rel="stylesheet" href="style.css">
         <title>Mamanpaz Iraans Restaurant</title>
       <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,22 +24,55 @@
        <div class="left-div">
         <a href="index.html" aria-label="Home"><button class="home"><img class="button-icon" src="icons/home.png" alt="Home icon"><span>Home</span></button></a>
         <a href="menu.html" aria-label="Menu"><button class="menu"><img class="button-icon" src="icons/menu.png" alt="Menu icon"><span>Menu</span></button></a>
-        <button class="events"><img class="button-icon" src="icons/events.png" alt="Events icon"><span>Events & Arrangements</span></button>
-        <button class="contactus"><img class="button-icon" src="icons/contactus.png" alt="Contact icon"><span>Contact us</span></button>
-        <button class="aboutus"><img class="button-icon" src="icons/aboutus.png" alt="About icon"><span>About us</span></button>
+        <a href="event.html" aria-label="Events and arrangements"><button class="events" type="button"><img class="button-icon" src="icons/events.png" alt="Events icon"><span>Events & Arrangements</span></button></a>
+        <a href="contactus.html" aria-label="Contact us"><button class="contactus" type="button"><img class="button-icon" src="icons/contactus.png" alt="Contact icon"><span>Contact us</span></button></a>
+        <a href="aboutus.html" aria-label="About us"><button class="aboutus" type="button"><img class="button-icon" src="icons/aboutus.png" alt="About icon"><span>About us</span></button></a>
       </div>
 
       <div class="center-panel">
-        <h2>Online Menu Of Mamanpaz Maastricht</h2>
-        <p class="panel-intro">PERSIAN / IRANIAN FOOD DELIVERY IN MAASTRICHT</p>
+        
+        
 
-        <section class="menu-section">
+          <nav class="menu-tabs" aria-label="Menu categories">
+            <button class="tab active" data-target="kebab"><span class="tab-en">Kebab</span><span class="tab-fa">کباب</span></button>
+            <button class="tab" data-target="stews"><span class="tab-en">Stews</span><span class="tab-fa">خورش</span></button>
+            <button class="tab" data-target="rice"><span class="tab-en">Rice</span><span class="tab-fa">پلو</span></button>
+            <button class="tab" data-target="side"><span class="tab-en">Side</span><span class="tab-fa">کنار غذا</span></button>
+            <button class="tab" data-target="starters"><span class="tab-en">Starters</span><span class="tab-fa">پیش غذا</span></button>
+            <button class="tab" data-target="wraps"><span class="tab-en">Wraps</span><span class="tab-fa">ساندویچ</span></button>
+            <button class="tab" data-target="desserts"><span class="tab-en">Desserts</span><span class="tab-fa">دسر</span></button>
+            <button class="tab" data-target="drinks"><span class="tab-en">Drinks</span><span class="tab-fa">نوشیدنی</span></button>
+            <button class="tab" data-target="sauces"><span class="tab-en">Sauces</span><span class="tab-fa">سس</span></button>
+          </nav>
+
+          <div class="cart-summary" id="cartSummary">
+            <button id="cartToggle" aria-expanded="false" class="left-cart-btn">
+              <img class="button-icon" src="icons/cart.svg" alt="Cart icon">
+              <span class="cart-label">Checkout</span>
+              <span class="cart-count">(<span class="cart-count-num">0</span>)</span>
+            </button>
+            <div class="cart-panel" id="cartPanel" aria-hidden="true">
+              <div class="cart-panel-header">
+                <h2>Checkout</h2>
+                <button class="cart-close" id="cartClose" type="button" aria-label="Close checkout">×</button>
+              </div>
+              <div class="cart-items-scroll">
+                <ul class="cart-items" id="cartItems"></ul>
+              </div>
+              <div class="cart-total" id="cartTotal">Total: 0,00 EUR</div>
+              <div class="cart-actions"><button id="checkoutBtn">Checkout</button></div>
+            </div>
+          </div>
+
+        <div class="center-body">
+
+        <section id="kebab" class="menu-section">
           <h3>کباب (Kebab)</h3>
           <div class="menu-item">
             <div class="menu-item-row">
               <div class="menu-item-title-wrap">
                 <img class="menu-item-image" src="menu/kebab-koobideh.PNG" alt="چلوکباب کوبیده" loading="lazy">
-                <strong>چلوکباب کوبیده (kebab koobideh)</strong>
+                <strong><span class="item-en">kebab koobideh</span><span class="item-fa">چلوکباب کوبیده</span></strong>
               </div>
               <span class="price">19,50 EUR <button class="order-btn">+</button></span>
             </div>
@@ -46,7 +82,7 @@
             <div class="menu-item-row">
               <div class="menu-item-title-wrap">
                 <img class="menu-item-image" src="menu/joojeh-kebab.PNG" alt="جوجه کباب" loading="lazy">
-                <strong>جوجه کباب (joojeh kebab)</strong>
+                <strong><span class="item-en">joojeh kebab</span><span class="item-fa">جوجه کباب</span></strong>
               </div>
               <span class="price">19,50 EUR <button class="order-btn">+</button></span>
             </div>
@@ -56,7 +92,7 @@
             <div class="menu-item-row">
               <div class="menu-item-title-wrap">
                 <img class="menu-item-image" src="menu/kebab-mix.PNG" alt="چلوکباب میکس" loading="lazy">
-                <strong>چلوکباب میکس با گوجه (جوجه و کوبیده) (kebab mix)</strong>
+                <strong><span class="item-en">kebab mix</span><span class="item-fa">چلوکباب میکس با گوجه (جوجه و کوبیده)</span></strong>
               </div>
               <span class="price">19,50 EUR <button class="order-btn">+</button></span>
             </div>
@@ -65,7 +101,8 @@
           <div class="menu-item">
             <div class="menu-item-row">
               <div class="menu-item-title-wrap">
-                <strong>چلو کباب برگ (kebab barg)</strong>
+                <img class="menu-item-image" src="menu/kebab-barg.png" alt="چلو کباب برگ" loading="lazy">
+                <strong><span class="item-en">kebab barg</span><span class="item-fa">چلو کباب برگ</span></strong>
               </div>
               <span class="price">27,50 EUR <button class="order-btn">+</button></span>
             </div>
@@ -75,7 +112,7 @@
             <div class="menu-item-row">
               <div class="menu-item-title-wrap">
                 <img class="menu-item-image" src="menu/kebab-vaziri.PNG" alt="چلوکباب وزیری" loading="lazy">
-                <strong>چلوکباب وزیری (kebab vaziri)</strong>
+                <strong><span class="item-en">kebab vaziri</span><span class="item-fa">چلوکباب وزیری</span></strong>
               </div>
               <span class="price">25,50 EUR <button class="order-btn">+</button></span>
             </div>
@@ -85,7 +122,7 @@
             <div class="menu-item-row">
               <div class="menu-item-title-wrap">
                 <img class="menu-item-image" src="menu/kebab-soltani.PNG" alt="چلوکباب سلطانی" loading="lazy">
-                <strong>چلوکباب سلطانی (kebab soltani)</strong>
+                <strong><span class="item-en">kebab soltani</span><span class="item-fa">چلوکباب سلطانی</span></strong>
               </div>
               <span class="price">25,50 EUR <button class="order-btn">+</button></span>
             </div>
@@ -93,13 +130,13 @@
           </div>
         </section>
 
-        <section class="menu-section">
+        <section id="stews" class="menu-section">
           <h3>خورش (Stews)</h3>
           <div class="menu-item">
             <div class="menu-item-row">
               <div class="menu-item-title-wrap">
                 <img class="menu-item-image" src="menu/khoresh-ghorme-sabzi.PNG" alt="قورمه سبزی" loading="lazy">
-                <strong>چلو خورش قورمه سبزی (khoresh ghorme sabzi)</strong>
+                <strong><span class="item-en">khoresh ghorme sabzi</span><span class="item-fa">چلو خورش قورمه سبزی</span></strong>
               </div>
               <span class="price">18,50 EUR <button class="order-btn">+</button></span>
             </div>
@@ -109,7 +146,7 @@
             <div class="menu-item-row">
               <div class="menu-item-title-wrap">
                 <img class="menu-item-image" src="menu/khoresh-gheime.PNG" alt="قیمه" loading="lazy">
-                <strong>چلو خورش قیمه (khoresh gheime)</strong>
+                <strong><span class="item-en">khoresh gheime</span><span class="item-fa">چلو خورش قیمه</span></strong>
               </div>
               <span class="price">18,50 EUR <button class="order-btn">+</button></span>
             </div>
@@ -119,7 +156,7 @@
             <div class="menu-item-row">
               <div class="menu-item-title-wrap">
                 <img class="menu-item-image" src="menu/khoresh-fesenjoon.PNG" alt="فسنجون" loading="lazy">
-                <strong>چلو خورش فسنجون ملس با گوشت (khoresh fesenjoon)</strong>
+                <strong><span class="item-en">khoresh fesenjoon</span><span class="item-fa">چلو خورش فسنجون ملس با گوشت</span></strong>
               </div>
               <span class="price">19,50 EUR <button class="order-btn">+</button></span>
             </div>
@@ -127,13 +164,13 @@
           </div>
         </section>
 
-        <section class="menu-section">
+        <section id="rice" class="menu-section">
           <h3>پلو (Rice)</h3>
           <div class="menu-item">
             <div class="menu-item-row">
               <div class="menu-item-title-wrap">
                 <img class="menu-item-image" src="menu/baghali-polo-ba-goosht.PNG" alt="باقالی پلو" loading="lazy">
-                <strong>باقالی پلو با گوشت (baghali polo ba goosht)</strong>
+                <strong><span class="item-en">baghali polo ba goosht</span><span class="item-fa">باقالی پلو با گوشت</span></strong>
               </div>
               <span class="price">18,50 EUR <button class="order-btn">+</button></span>
             </div>
@@ -143,7 +180,7 @@
             <div class="menu-item-row">
               <div class="menu-item-title-wrap">
                 <img class="menu-item-image" src="menu/adas-polo.PNG" alt="عدس پلو" loading="lazy">
-                <strong>عدس پلو (adas polo)</strong>
+                <strong><span class="item-en">adas polo</span><span class="item-fa">عدس پلو</span></strong>
               </div>
               <span class="price">16,50 EUR <button class="order-btn">+</button></span>
             </div>
@@ -152,7 +189,8 @@
           <div class="menu-item">
             <div class="menu-item-row">
               <div class="menu-item-title-wrap">
-                <strong>لوبیا پلو (loobia polo)</strong>
+                <img class="menu-item-image" src="menu/loobia-polo.png" alt="لوبیا پلو" loading="lazy">
+                <strong><span class="item-en">loobia polo</span><span class="item-fa">لوبیا پلو</span></strong>
               </div>
               <span class="price">16,50 EUR <button class="order-btn">+</button></span>
             </div>
@@ -161,7 +199,8 @@
           <div class="menu-item">
             <div class="menu-item-row">
               <div class="menu-item-title-wrap">
-                <strong>زرشک پلو با مرغ (zereshk polo ba morgh)</strong>
+                <img class="menu-item-image" src="menu/Zereshkpolo_ba_morgh.PNG" loading="lazy">
+                <strong><span class="item-en">zereshk polo ba morgh</span><span class="item-fa">زرشک پلو با مرغ</span></strong>
               </div>
               <span class="price">18,50 EUR <button class="order-btn">+</button></span>
             </div>
@@ -169,59 +208,288 @@
           </div>
         </section>
 
-        <section class="menu-section">
+        <section id="side" class="menu-section">
           <h3>کنار غذا (Side)</h3>
-          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/mast-mosir.PNG" alt="ماست موسیر" loading="lazy"><strong>ماست موسیر (mast moosir)</strong></div><span class="price">4,75 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Yoghurt met mosir (knoflookui) smaak.</div></div>
-          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/mast-o-khiar.PNG" alt="ماست و خیار" loading="lazy"><strong>ماست و خیار (mast o khiar)</strong></div><span class="price">4,75 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Yoghurt met komkommer en kruiden.</div></div>
-          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><strong>بورانی ماست و بادمجان (borani mast o bademjoon)</strong></div><span class="price">4,75 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Borani-yoghurt met gegrilde aubergine.</div></div>
-          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/salad-shirazi.PNG" alt="سالاد شیرازی" loading="lazy"><strong>سالاد شیرازی (salad shirazi)</strong></div><span class="price">4,75 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Salade met gesneden komkommer, tomaat en ui op smaak gebracht met citroen.</div></div>
-          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/torshi-makhloot.PNG" alt="ترشی مخلوط" loading="lazy"><strong>ترشی مخلوط با سرکه خانگی (torshi makhloot)</strong></div><span class="price">4,75 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Thuisgemaakte torshi vermengd met zelfgemaakte azijn.</div></div>
-          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/augurk.PNG" alt="خیارشور" loading="lazy"><strong>خیارشور (augurk)</strong></div><span class="price">3,75 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Kleine bakje van augurken.</div></div>
-          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/torshi-goje.PNG" alt="ترشی گوجه" loading="lazy"><strong>ترشی گوجه خونگی (torshi gojeh)</strong></div><span class="price">4,75 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Thuisgemaakte torshi mix met verse tomatenpuree.</div></div>
-          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/zeytoon-parvardeh.PNG" alt="زیتون پرورده" loading="lazy"><strong>زیتون پرورده (zeytoon parvardeh)</strong></div><span class="price">5,00 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Olijven gemarineerd in een saus mix van granaatappel, walnoten en specerijen.</div></div>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/mast-mosir.PNG" alt="ماست موسیر" loading="lazy"><strong><span class="item-en">mast moosir</span><span class="item-fa">ماست موسیر</span></strong></div><span class="price">4,75 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Yoghurt met mosir (knoflookui) smaak.</div></div>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/mast-o-khiar.PNG" alt="ماست و خیار" loading="lazy"><strong><span class="item-en">mast o khiar</span><span class="item-fa">ماست و خیار</span></strong></div><span class="price">4,75 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Yoghurt met komkommer en kruiden.</div></div>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/borani-mast-o-bademjoon.png" alt="بورانی ماست و بادمجان" loading="lazy"><strong><span class="item-en">borani mast o bademjoon</span><span class="item-fa">بورانی ماست و بادمجان</span></strong></div><span class="price">4,75 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Borani-yoghurt met gegrilde aubergine.</div></div>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/salad-shirazi.PNG" alt="سالاد شیرازی" loading="lazy"><strong><span class="item-en">salad shirazi</span><span class="item-fa">سالاد شیرازی</span></strong></div><span class="price">4,75 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Salade met gesneden komkommer, tomaat en ui op smaak gebracht met citroen.</div></div>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/torshi-makhloot.PNG" alt="ترشی مخلوط" loading="lazy"><strong><span class="item-en">torshi makhloot</span><span class="item-fa">ترشی مخلوط با سرکه خانگی</span></strong></div><span class="price">4,75 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Thuisgemaakte torshi vermengd met zelfgemaakte azijn.</div></div>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/augurk.PNG" alt="خیارشور" loading="lazy"><strong><span class="item-en">augurk</span><span class="item-fa">خیارشور</span></strong></div><span class="price">3,75 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Kleine bakje van augurken.</div></div>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/torshi-goje.PNG" alt="ترشی گوجه" loading="lazy"><strong><span class="item-en">torshi gojeh</span><span class="item-fa">ترشی گوجه خونگی</span></strong></div><span class="price">4,75 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Thuisgemaakte torshi mix met verse tomatenpuree.</div></div>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/zeytoon-parvardeh.PNG" alt="زیتون پرورده" loading="lazy"><strong><span class="item-en">zeytoon parvardeh</span><span class="item-fa">زیتون پرورده</span></strong></div><span class="price">5,00 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Olijven gemarineerd in een saus mix van granaatappel, walnoten en specerijen.</div></div>
         </section>
 
-        <section class="menu-section">
+        <section id="starters" class="menu-section">
           <h3>پیش غذا (Starters)</h3>
-          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/kashke-bademjoon.PNG" alt="کشک بادمجون" loading="lazy"><strong>کشک بادمجون (kashke bademjoon)</strong></div><span class="price">12,99 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Mix van gefrituurde aubergine, kashk, knoflook, ui en munt.</div></div>
-          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/mirza-ghasemi.PNG" alt="میرزا قاسمی" loading="lazy"><strong>میرزا قاسمی (mirza ghasemi)</strong></div><span class="price">12,99 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Mix van gegrilde aubergine, ui, knoflook, tomatenpuree en ei.</div></div>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/kashke-bademjoon.PNG" alt="کشک بادمجون" loading="lazy"><strong><span class="item-en">kashke bademjoon</span><span class="item-fa">کشک بادمجون</span></strong></div><span class="price">12,99 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Mix van gefrituurde aubergine, kashk, knoflook, ui en munt.</div></div>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/mirza-ghasemi.PNG" alt="میرزا قاسمی" loading="lazy"><strong><span class="item-en">mirza ghasemi</span><span class="item-fa">میرزا قاسمی</span></strong></div><span class="price">12,99 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Mix van gegrilde aubergine, ui, knoflook, tomatenpuree en ei.</div></div>
         </section>
 
-        <section class="menu-section">
+        <section id="wraps" class="menu-section">
           <h3>ساندویچ (Wraps)</h3>
-          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/kebab-koobideh.PNG" alt="ساندویچ کباب کوبیده" loading="lazy"><strong>ساندویچ کباب کوبیده (kebab koobideh wrap)</strong></div><span class="price">10,50 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Een wrap met een spies kebab koobideh (gehakt lam en kalfsvlees), gegrilde tomaat, sla, komkommer, ui en peterselie.</div></div>
-          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/joojeh-kebab-wrap.PNG" alt="ساندویچ جوجه کباب" loading="lazy"><strong>ساندویچ جوجه کباب (Joojeh kebab wrap)</strong></div><span class="price">10,50 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Een wrap met een spies Joojeh kebab (gegrilde kipfilet), gegrilde tomaat, sla, komkommer, ui en peterselie.</div></div>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/kebab-koobideh-wrap.png" alt="ساندویچ کباب کوبیده" loading="lazy"><strong><span class="item-en">kebab koobideh wrap</span><span class="item-fa">ساندویچ کباب کوبیده</span></strong></div><span class="price">10,50 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Een wrap met een spies kebab koobideh (gehakt lam en kalfsvlees), gegrilde tomaat, sla, komkommer, ui en peterselie.</div></div>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/joojeh-kebab-wrap.PNG" alt="ساندویچ جوجه کباب" loading="lazy"><strong><span class="item-en">Joojeh kebab wrap</span><span class="item-fa">ساندویچ جوجه کباب</span></strong></div><span class="price">10,50 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Een wrap met een spies Joojeh kebab (gegrilde kipfilet), gegrilde tomaat, sla, komkommer, ui en peterselie.</div></div>
         </section>
 
-        <section class="menu-section">
+        <section id="desserts" class="menu-section">
           <h3>دسر (Desserts)</h3>
-          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/faloodeh.PNG" alt="فالوده" loading="lazy"><strong>فالوده (faloodeh)</strong></div><span class="price">5,00 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Perzische dessert van dunne rijstnoedels in een zoete siroop en rozenwater.</div></div>
-          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/saffraan-ijsje.PNG" alt="بستنی سنتی" loading="lazy"><strong>بستنی سنتی (saffraan ijsje)</strong></div><span class="price">5,00 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Romig ijs met de delicate smaken van saffraan en hint van rozenwater.</div></div>
-          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><strong>بستنی شیریخ (shiryakh ijsje)</strong></div><span class="price">5,00 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">IJsje gemaakt van gecondenseerde melk, suiker en vanille met een zachte textuur en een lichte hint van rozenwater.</div></div>
-          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/baklava.PNG" alt="باقلوا" loading="lazy"><strong>باقلوا (baklava)</strong></div><span class="price">0,75 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Een combinatie van filodeeg, noten en honing in laagjes gebakken.</div></div>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/faloodeh.PNG" alt="فالوده" loading="lazy"><strong><span class="item-en">faloodeh</span><span class="item-fa">فالوده</span></strong></div><span class="price">5,00 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Perzische dessert van dunne rijstnoedels in een zoete siroop en rozenwater.</div></div>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/saffraan-ijsje.PNG" alt="بستنی سنتی" loading="lazy"><strong><span class="item-en">saffraan ijsje</span><span class="item-fa">بستنی سنتی</span></strong></div><span class="price">5,00 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Romig ijs met de delicate smaken van saffraan en hint van rozenwater.</div></div>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><strong><span class="item-en">shiryakh ijsje</span><span class="item-fa">بستنی شیریخ</span></strong></div><span class="price">5,00 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">IJsje gemaakt van gecondenseerde melk, suiker en vanille met een zachte textuur en een lichte hint van rozenwater.</div></div>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/baklava.PNG" alt="باقلوا" loading="lazy"><strong><span class="item-en">baklava</span><span class="item-fa">باقلوا</span></strong></div><span class="price">0,75 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Een combinatie van filodeeg, noten en honing in laagjes gebakken.</div></div>
         </section>
 
-        <section class="menu-section">
+        <section id="drinks" class="menu-section">
           <h3>نوشیدنی (Drinks)</h3>
-          <div class="menu-item"><div class="menu-item-row"><strong>دوغ ایرانی (doogh)</strong><span class="price">2,50 EUR <button class="order-btn">+</button></span></div><div class="menu-desc">Iraanse yoghurt drankje.</div></div>
-          <div class="menu-item"><div class="menu-item-row"><strong>کوکا کولا</strong><span class="price">2,50 EUR <button class="order-btn">+</button></span></div></div>
-          <div class="menu-item"><div class="menu-item-row"><strong>اسپرایت</strong><span class="price">2,50 EUR <button class="order-btn">+</button></span></div></div>
-          <div class="menu-item"><div class="menu-item-row"><strong>فانتا</strong><span class="price">2,50 EUR <button class="order-btn">+</button></span></div></div>
-          <div class="menu-item"><div class="menu-item-row"><strong>کولا زیرو</strong><span class="price">2,50 EUR <button class="order-btn">+</button></span></div></div>
+          <div class="menu-item">
+            <div class="menu-item-row">
+              <strong><span class="item-en">Doogh</span><span class="item-fa">دوغ ایرانی</span></strong>
+              <span class="price">2,50 EUR <button class="order-btn">+</button></span>
+            </div>
+            <div class="menu-desc">Iraanse yoghurt drankje.</div>
+          </div>
+            <div class="menu-item">
+              <div class="menu-item-row">
+                <div class="menu-item-title-wrap">
+                  <img class="menu-item-image" src="menu/coca-cola.svg" alt="Coca-Cola" loading="lazy">
+                  <strong><span class="item-en">Coca-Cola</span><span class="item-fa">کوکا کولا</span></strong>
+                </div>
+                <span class="price">2,50 EUR <button class="order-btn">+</button></span>
+              </div>
+            </div>
+            <div class="menu-item">
+              <div class="menu-item-row">
+                <div class="menu-item-title-wrap">
+                  <img class="menu-item-image" src="menu/sprite.svg" alt="Sprite" loading="lazy">
+                  <strong><span class="item-en">Sprite</span><span class="item-fa">اسپرایت</span></strong>
+                </div>
+                <span class="price">2,50 EUR <button class="order-btn">+</button></span>
+              </div>
+            </div>
+            <div class="menu-item">
+              <div class="menu-item-row">
+                <div class="menu-item-title-wrap">
+                  <img class="menu-item-image" src="menu/fanta.svg" alt="Fanta" loading="lazy">
+                  <strong><span class="item-en">Fanta</span><span class="item-fa">فانتا</span></strong>
+                </div>
+                <span class="price">2,50 EUR <button class="order-btn">+</button></span>
+              </div>
+            </div>
+            <div class="menu-item">
+              <div class="menu-item-row">
+                <div class="menu-item-title-wrap">
+                  <img class="menu-item-image" src="menu/coca-zero.svg" alt="Coca-Cola Zero" loading="lazy">
+                  <strong><span class="item-en">Coca-Cola Zero</span><span class="item-fa">کولا زیرو</span></strong>
+                </div>
+                <span class="price">2,50 EUR <button class="order-btn">+</button></span>
+              </div>
+            </div>
         </section>
 
-        <section class="menu-section">
+        <section id="sauces" class="menu-section">
           <h3>سس (Sauces)</h3>
-          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/ketchup.PNG" alt="کچاپ" loading="lazy"><strong>سس کچاپ (Ketchup)</strong></div><span class="price">2,50 EUR <button class="order-btn">+</button></span></div></div>
-          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/mayonnaise.PNG" alt="مایونز" loading="lazy"><strong>سس مایونز (Mayonnaise)</strong></div><span class="price">2,50 EUR <button class="order-btn">+</button></span></div></div>
-          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/knoflooksaus.PNG" alt="سس سیر" loading="lazy"><strong>سس سیر (Knoflooksaus)</strong></div><span class="price">2,50 EUR <button class="order-btn">+</button></span></div></div>
-          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/chilisaus.PNG" alt="سس فلفل قرمز" loading="lazy"><strong>سس فلفل قرمز (Chilisaus)</strong></div><span class="price">2,50 EUR <button class="order-btn">+</button></span></div></div>
-          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/sweet-chilisaus.PNG" alt="سس فلفل قرمز شیرین" loading="lazy"><strong>سس فلفل قرمز شیرین (Sweet chilisaus)</strong></div><span class="price">2,50 EUR <button class="order-btn">+</button></span></div></div>
-          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/mangosaus.PNG" alt="سس انبه" loading="lazy"><strong>سس انبه (Mangosaus)</strong></div><span class="price">2,50 EUR <button class="order-btn">+</button></span></div></div>
-          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/spicy-tomatensaus.PNG" alt="سس گوجه تند" loading="lazy"><strong>سس گوجه تند (Spicy tomatensaus)</strong></div><span class="price">2,50 EUR <button class="order-btn">+</button></span></div></div>
-          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/avocado-saus.PNG" alt="سس آووکادو" loading="lazy"><strong>سس آووکادو (Avocado saus)</strong></div><span class="price">2,50 EUR <button class="order-btn">+</button></span></div></div>
-          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/bbq-saus.PNG" alt="سس باربیکیو" loading="lazy"><strong>سس باربیکیو (BBQ saus)</strong></div><span class="price">2,50 EUR <button class="order-btn">+</button></span></div></div>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/ketchup.PNG" alt="کچاپ" loading="lazy"><strong><span class="item-en">Ketchup</span><span class="item-fa">سس کچاپ</span></strong></div><span class="price">2,50 EUR <button class="order-btn">+</button></span></div></div>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/mayonnaise.PNG" alt="مایونز" loading="lazy"><strong><span class="item-en">Mayonnaise</span><span class="item-fa">سس مایونز</span></strong></div><span class="price">2,50 EUR <button class="order-btn">+</button></span></div></div>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/knoflooksaus.PNG" alt="سس سیر" loading="lazy"><strong><span class="item-en">Knoflooksaus</span><span class="item-fa">سس سیر</span></strong></div><span class="price">2,50 EUR <button class="order-btn">+</button></span></div></div>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/chilisaus.PNG" alt="سس فلفل قرمز" loading="lazy"><strong><span class="item-en">Chilisaus</span><span class="item-fa">سس فلفل قرمز</span></strong></div><span class="price">2,50 EUR <button class="order-btn">+</button></span></div></div>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/sweet-chilisaus.PNG" alt="سس فلفل قرمز شیرین" loading="lazy"><strong><span class="item-en">Sweet chilisaus</span><span class="item-fa">سس فلفل قرمز شیرین</span></strong></div><span class="price">2,50 EUR <button class="order-btn">+</button></span></div></div>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/mangosaus.PNG" alt="سس انبه" loading="lazy"><strong><span class="item-en">Mangosaus</span><span class="item-fa">سس انبه</span></strong></div><span class="price">2,50 EUR <button class="order-btn">+</button></span></div></div>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/spicy-tomatensaus.PNG" alt="سس گوجه تند" loading="lazy"><strong><span class="item-en">Spicy tomatensaus</span><span class="item-fa">سس گوجه تند</span></strong></div><span class="price">2,50 EUR <button class="order-btn">+</button></span></div></div>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/avocado-saus.PNG" alt="سس آووکادو" loading="lazy"><strong><span class="item-en">Avocado saus</span><span class="item-fa">سس آووکادو</span></strong></div><span class="price">2,50 EUR <button class="order-btn">+</button></span></div></div>
+          <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/bbq-saus.PNG" alt="سس باربیکیو" loading="lazy"><strong><span class="item-en">BBQ saus</span><span class="item-fa">سس باربیکیو</span></strong></div><span class="price">2,50 EUR <button class="order-btn">+</button></span></div></div>
         </section>
+        </div>
       </div>
-  </body>
+      <script src="menu-runtime.js"></script>
+      <script>
+        (function(){
+          const tabs = document.querySelectorAll('.menu-tabs .tab');
+          const sections = document.querySelectorAll('.menu-section');
+
+          // Click -> smooth scroll and set active
+          tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+              const id = tab.dataset.target;
+              const el = document.getElementById(id);
+              if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              tabs.forEach(t=>t.classList.remove('active'));
+              tab.classList.add('active');
+            });
+          });
+
+          // Observe sections to update active tab on scroll
+          const observer = new IntersectionObserver((entries)=>{
+            entries.forEach(entry => {
+              if (entry.isIntersecting) {
+                const id = entry.target.id;
+                const activeTab = document.querySelector('.menu-tabs .tab[data-target="'+id+'"]');
+                if (activeTab) {
+                  tabs.forEach(t=>t.classList.remove('active'));
+                  activeTab.classList.add('active');
+                }
+              }
+            });
+          }, { root: null, rootMargin: '-20% 0px -50% 0px', threshold: 0 });
+
+          sections.forEach(s => observer.observe(s));
+
+          // Move .price elements to the bottom of each .menu-item so they appear under the info
+          document.querySelectorAll('.menu-item').forEach(item => {
+            const price = item.querySelector('.price');
+            if (price) item.appendChild(price);
+          });
+
+          // --- Shopping cart logic ---
+          const CART_KEY = 'mamanpaz_cart_v1';
+          let cart = JSON.parse(localStorage.getItem(CART_KEY) || '{}');
+
+          const cartToggle = document.getElementById('cartToggle');
+          const cartPanel = document.getElementById('cartPanel');
+          const cartClose = document.getElementById('cartClose');
+          const cartItemsEl = document.getElementById('cartItems');
+          const cartTotalEl = document.getElementById('cartTotal');
+          const checkoutBtn = document.getElementById('checkoutBtn');
+
+          function formatPrice(num){
+            return num.toFixed(2).replace('.', ',') + ' EUR';
+          }
+
+          function saveCart(){
+            localStorage.setItem(CART_KEY, JSON.stringify(cart));
+          }
+
+          function cartCount(){
+            return Object.values(cart).reduce((s,it)=>s+it.qty,0);
+          }
+
+          function cartTotal(){
+            return Object.values(cart).reduce((s,it)=>s + it.qty * it.price, 0);
+          }
+
+          function renderCart(){
+            const count = cartCount();
+            const countEl = cartToggle.querySelector('.cart-count-num');
+            if(countEl) countEl.textContent = count;
+            cartItemsEl.innerHTML = '';
+            for(const key of Object.keys(cart)){
+              const it = cart[key];
+              const li = document.createElement('li');
+              li.className = 'cart-item';
+              li.dataset.key = key;
+              li.innerHTML = `
+                ${it.img ? `<img class="cart-thumb" src="${it.img}" alt="${it.name}">` : ''}
+                <div style="display:flex;align-items:center;gap:8px;flex:1">
+                  <span class="cart-name">${it.name}</span>
+                  <span class="cart-qty">x${it.qty}</span>
+                </div>
+                <div style="text-align:right">
+                  <div class="cart-price">${formatPrice(it.price * it.qty)}</div>
+                  <div class="cart-controls">
+                    <button class="cart-decrease">−</button>
+                    <button class="cart-increase">+</button>
+                    <button class="cart-remove">✕</button>
+                  </div>
+                </div>
+              `;
+              cartItemsEl.appendChild(li);
+            }
+            cartTotalEl.textContent = 'Total: ' + formatPrice(cartTotal());
+          }
+
+          function parsePrice(text){
+            const m = text.replace('\u00A0',' ').match(/(\d+[.,]?\d{0,2})/);
+            if(!m) return 0;
+            return parseFloat(m[1].replace(',', '.'));
+          }
+
+          function animateAddedItem(itemEl){
+            const source = itemEl.querySelector('.menu-item-image') || itemEl.querySelector('.order-btn');
+            if(!source) return;
+            const sourceRect = source.getBoundingClientRect();
+            const targetRect = cartToggle.getBoundingClientRect();
+            const flyer = source.cloneNode(true);
+            flyer.className = 'cart-flyer';
+            flyer.removeAttribute('alt');
+            flyer.style.left = `${sourceRect.left}px`;
+            flyer.style.top = `${sourceRect.top}px`;
+            flyer.style.width = `${Math.max(sourceRect.width, 36)}px`;
+            flyer.style.height = `${Math.max(sourceRect.height, 36)}px`;
+            flyer.style.setProperty('--fly-x', `${targetRect.left + targetRect.width / 2 - sourceRect.left - sourceRect.width / 2}px`);
+            flyer.style.setProperty('--fly-y', `${targetRect.top + targetRect.height / 2 - sourceRect.top - sourceRect.height / 2}px`);
+            document.body.appendChild(flyer);
+            flyer.addEventListener('animationend', () => flyer.remove(), { once: true });
+          }
+
+          // Add to cart when + pressed on menu items
+          document.addEventListener('click', (e) => {
+            if(!e.target.closest('.order-btn')) return;
+              const itemEl = e.target.closest('.menu-item');
+              if(!itemEl) return;
+              const nameEl = itemEl.querySelector('.menu-item-title-wrap strong') || itemEl.querySelector('strong');
+              const name = nameEl ? nameEl.textContent.trim() : 'Item';
+              const priceEl = itemEl.querySelector('.price');
+              const price = priceEl ? parsePrice(priceEl.textContent) : 0;
+              const imgEl = itemEl.querySelector('.menu-item-image');
+              const img = imgEl ? imgEl.getAttribute('src') : null;
+              const menuId = Number(itemEl.dataset.menuId);
+              if (!Number.isInteger(menuId)) {
+                alert('The ordering service is unavailable. Please refresh the page.');
+                return;
+              }
+              const key = String(menuId);
+
+              if(!cart[key]) cart[key] = { id: menuId, name, price, qty: 0, img };
+              cart[key].qty += 1;
+              saveCart();
+              renderCart();
+              animateAddedItem(itemEl);
+
+              // brief highlight animation on cart toggle
+              cartToggle.classList.add('flash');
+              setTimeout(()=>cartToggle.classList.remove('flash'), 400);
+          });
+
+          // Cart toggle
+          cartToggle.addEventListener('click', ()=>{
+            const open = cartPanel.getAttribute('aria-hidden') === 'false';
+            cartPanel.setAttribute('aria-hidden', String(!open));
+            cartToggle.setAttribute('aria-expanded', String(!open));
+            cartPanel.style.display = open ? 'none' : 'flex';
+          });
+
+          cartClose.addEventListener('click', ()=>{
+            cartPanel.setAttribute('aria-hidden', 'true');
+            cartToggle.setAttribute('aria-expanded', 'false');
+            cartPanel.style.display = 'none';
+          });
+
+          // Cart controls (delegate)
+          cartItemsEl.addEventListener('click', (e)=>{
+            const li = e.target.closest('.cart-item');
+            if(!li) return;
+            const key = li.dataset.key;
+            if(e.target.classList.contains('cart-increase')){
+              cart[key].qty += 1; saveCart(); renderCart();
+            } else if(e.target.classList.contains('cart-decrease')){
+              cart[key].qty = Math.max(0, cart[key].qty - 1);
+              if(cart[key].qty === 0) delete cart[key]; saveCart(); renderCart();
+            } else if(e.target.classList.contains('cart-remove')){
+              delete cart[key]; saveCart(); renderCart();
+            }
+          });
+
+          checkoutBtn.addEventListener('click', ()=>{
+            if(cartCount() === 0){ alert('Your cart is empty'); return; }
+            window.location.href = 'checkout.html';
+          });
+
+          // initialize UI
+          renderCart();
+          // hide panel by default
+          cartPanel.style.display = 'none';
+        })();
+      </script>
+      <script src="site.js"></script>
+    </body>
 </html>

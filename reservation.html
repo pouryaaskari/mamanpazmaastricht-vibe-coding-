@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Reservation | Mamanpaz Maastricht</title>
+  </head>
+  <body class="menu-page checkout-page reservation-page">
+    <div class="header">
+      <img class="logo" src="icons/logomamanpaz.PNG" alt="Mamanpaz logo">
+      <div class="site-title">
+        <p class="site-name">Mamanpaz Maastricht</p>
+        <p class="site-sub">Authentic Iranian Restaurant</p>
+      </div>
+      <img class="logo" src="icons/logomamanpaz.PNG" alt="Mamanpaz logo">
+    </div>
+
+    <a class="checkout-back" href="index.html">
+      <img class="checkout-back-icon" src="icons/back.svg" alt="">
+      <span>Back to home</span>
+    </a>
+
+    <main class="checkout-shell reservation-shell">
+      <section class="checkout-card reservation-card" aria-labelledby="reservation-title">
+        <h1 id="reservation-title">Make a reservation</h1>
+        <p class="checkout-intro">Tell us when you would like to visit and what you are celebrating.</p>
+
+        <h2 class="checkout-section-title">Reservation details</h2>
+        <div class="reservation-fields">
+          <label for="reservationDate">Date<input id="reservationDate" type="date" required></label>
+          <label for="reservationTime">Time
+            <select id="reservationTime" required>
+              <option value="" selected disabled>Choose a time</option>
+            </select>
+          </label>
+          <label for="guestCount">Number of people
+            <span class="guest-count-control">
+              <button type="button" class="guest-count-button" id="guestDecrease" aria-label="Decrease number of people">−</button>
+              <input id="guestCount" type="number" min="1" max="30" value="2" required>
+              <button type="button" class="guest-count-button" id="guestIncrease" aria-label="Increase number of people">+</button>
+            </span>
+          </label>
+        </div>
+
+        <h2 class="checkout-section-title">Contact details</h2>
+        <div class="reservation-fields">
+          <label for="reservationName">Name<input id="reservationName" type="text" placeholder="Your full name" autocomplete="name" required></label>
+          <label for="reservationEmail">Email address<input id="reservationEmail" type="email" placeholder="you@example.com" autocomplete="email" required></label>
+          <label for="reservationPhone">Phone number<input id="reservationPhone" type="tel" placeholder="Your phone number" autocomplete="tel" required></label>
+        </div>
+
+        <h2 class="checkout-section-title">Purpose of your visit</h2>
+        <div class="reservation-purpose">
+          <label for="reservationPurpose">What are you celebrating?
+            <select id="reservationPurpose">
+              <option value="dinner">Dinner</option>
+              <option value="birthday">Birthday</option>
+              <option value="date">Date</option>
+              <option value="wedding">Wedding</option>
+              <option value="anniversary">Anniversary</option>
+              <option value="business">Business dinner</option>
+              <option value="other">Other</option>
+            </select>
+          </label>
+          <label for="reservationNotes">Extra details<textarea id="reservationNotes" placeholder="Tell us anything that would help us prepare (optional)"></textarea></label>
+        </div>
+
+        <button class="checkout-submit" id="reservationSubmit" type="button">Request reservation</button>
+      </section>
+    </main>
+
+    <div class="confirmation-modal" id="reservationConfirmation" role="dialog" aria-modal="true" aria-labelledby="reservationConfirmationTitle" hidden>
+      <div class="confirmation-card">
+        <h2 id="reservationConfirmationTitle">Reservation request received!</h2>
+        <p>Thank you. We will contact you by email or phone to confirm your reservation.</p>
+        <a class="confirmation-button" href="index.html">Back to home</a>
+      </div>
+    </div>
+
+    <script>
+      (() => {
+        const dateField = document.getElementById('reservationDate');
+        const timeField = document.getElementById('reservationTime');
+        const submitButton = document.getElementById('reservationSubmit');
+        const confirmation = document.getElementById('reservationConfirmation');
+        const guestCount = document.getElementById('guestCount');
+
+        function changeGuestCount(amount) {
+          const nextValue = Math.min(30, Math.max(1, Number(guestCount.value || 1) + amount));
+          guestCount.value = nextValue;
+        }
+
+        document.getElementById('guestDecrease').addEventListener('click', () => changeGuestCount(-1));
+        document.getElementById('guestIncrease').addEventListener('click', () => changeGuestCount(1));
+
+        const today = new Date();
+        const todayValue = [today.getFullYear(), String(today.getMonth() + 1).padStart(2, '0'), String(today.getDate()).padStart(2, '0')].join('-');
+        dateField.min = todayValue;
+
+        for (let minutes = 16 * 60 + 30; minutes <= 21 * 60 + 45; minutes += 15) {
+          const hours = String(Math.floor(minutes / 60)).padStart(2, '0');
+          const remainder = String(minutes % 60).padStart(2, '0');
+          timeField.insertAdjacentHTML('beforeend', `<option value="${hours}:${remainder}">${hours}:${remainder}</option>`);
+        }
+
+        submitButton.addEventListener('click', async () => {
+          const requiredFields = [...document.querySelectorAll('.reservation-card [required]')];
+          const missingField = requiredFields.find(field => !field.value.trim());
+          if (missingField) {
+            missingField.focus();
+            return;
+          }
+          submitButton.disabled = true;
+          try {
+            const response = await fetch('/api/reservations', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ name: document.getElementById('reservationName').value.trim(), email: document.getElementById('reservationEmail').value.trim(), phone: document.getElementById('reservationPhone').value.trim(), date: dateField.value, time: timeField.value, guests: Number(guestCount.value), purpose: document.getElementById('reservationPurpose').value, notes: document.getElementById('reservationNotes').value.trim() })
+            });
+            if (!response.ok) {
+              const result = await response.json().catch(() => ({}));
+              alert(result.error || 'We could not save your reservation. Please try again.');
+              submitButton.disabled = false;
+              return;
+            }
+          } catch (error) {
+            alert('The reservation service is unavailable. Please try again when the restaurant server is running.');
+            submitButton.disabled = false;
+            return;
+          }
+          confirmation.hidden = false;
+        });
+      })();
+    </script>
+    <script src="site.js"></script>
+  </body>
+</html>

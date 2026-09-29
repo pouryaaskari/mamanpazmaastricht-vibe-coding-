@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Checkout | Mamanpaz Maastricht</title>
+  </head>
+  <body class="menu-page checkout-page">
+    <div class="header">
+      <img class="logo" src="icons/logomamanpaz.PNG" alt="Mamanpaz logo">
+      <div class="site-title">
+        <p class="site-name">Mamanpaz Maastricht</p>
+        <p class="site-sub">Authentic Iranian Restaurant</p>
+      </div>
+      <img class="logo" src="icons/logomamanpaz.PNG" alt="Mamanpaz logo">
+    </div>
+
+    <a class="checkout-back" href="menu.html"><img class="checkout-back-icon" src="icons/back.svg" alt=""><span>Back to menu</span></a>
+
+    <main class="checkout-shell">
+      <section class="checkout-card" aria-labelledby="checkout-title">
+        <h1 id="checkout-title">Checkout</h1>
+        <p class="checkout-intro">Choose how you would like to receive your order.</p>
+
+        <div class="checkout-options" role="radiogroup" aria-label="Order method">
+          <label class="checkout-option">
+            <input type="radio" name="order-method" value="takeaway" checked>
+              <img class="checkout-option-icon" src="icons/takeaway-hand.svg" alt="">
+              <span>Takeaway</span>
+          </label>
+          <label class="checkout-option">
+            <input type="radio" name="order-method" value="delivery">
+              <img class="checkout-option-icon" src="icons/delivery-scooter.svg" alt="">
+              <span>Delivery</span>
+          </label>
+        </div>
+
+        <label class="checkout-time" for="orderTime">
+          <span id="orderTimeLabel">Pickup time</span>
+          <select id="orderTime" required>
+            <option value="" selected disabled>Choose a time</option>
+          </select>
+        </label>
+
+        <h2 class="checkout-section-title">Your order</h2>
+        <div class="checkout-summary">
+          <ul id="checkoutItems"></ul>
+          <div class="checkout-total" id="checkoutTotal">Total: 0,00 EUR</div>
+          <div class="delivery-fee" id="deliveryFee" hidden></div>
+        </div>
+
+        <h2 class="checkout-section-title">Contact details</h2>
+        <div class="checkout-fields checkout-contact-fields">
+          <label for="fullName">Name<input id="fullName" type="text" placeholder="Your full name" autocomplete="name"></label>
+          <label for="phone">Phone number<input id="phone" type="tel" placeholder="Your phone number" autocomplete="tel"></label>
+          <label for="email">Email address<input id="email" type="email" placeholder="you@example.com" autocomplete="email"></label>
+        </div>
+
+        <div class="checkout-address" id="checkoutAddress">
+          <h2 class="checkout-section-title">Delivery address</h2>
+          <div class="checkout-fields">
+            <label for="street">Street name<input id="street" type="text" placeholder="Street name" autocomplete="address-line1"></label>
+            <label for="houseNumber">House number<input id="houseNumber" class="house-number-input" type="text" placeholder="123" inputmode="numeric" maxlength="3" pattern="[0-9]{1,3}" autocomplete="address-line2"></label>
+            <label for="postcode">Postcode<input id="postcode" type="text" placeholder="6217 CT" autocomplete="postal-code"></label>
+            <label for="city">City<input id="city" type="text" placeholder="City, e.g. Maastricht" autocomplete="address-level2"></label>
+          </div>
+          <p class="delivery-zone" id="deliveryZone" aria-live="polite"></p>
+          <fieldset class="payment-methods">
+            <legend>Payment method</legend>
+            <label><input type="radio" name="payment-method" value="cash" checked> Cash</label>
+            <label><input type="radio" name="payment-method" value="tikkie"> Tikkie</label>
+          </fieldset>
+        </div>
+
+        <h2 class="checkout-section-title">Special instructions</h2>
+        <label class="checkout-instructions" for="instructions"><textarea id="instructions" placeholder="Add instructions for your order (optional)"></textarea></label>
+
+        <button class="checkout-submit" id="placeOrder" type="button">Place order</button>
+      </section>
+    </main>
+
+    <div class="confirmation-modal" id="confirmationModal" role="dialog" aria-modal="true" aria-labelledby="confirmationTitle" hidden>
+      <div class="confirmation-card">
+        <h2 id="confirmationTitle">Thank you for your order!</h2>
+        <p>Your order has been received. The restaurant will confirm it by phone if needed.</p>
+        <a class="confirmation-button" href="menu.html">Back to menu</a>
+      </div>
+    </div>
+
+    <div class="delivery-check-modal" id="deliveryCheckModal" role="dialog" aria-modal="true" aria-labelledby="deliveryCheckTitle" hidden>
+      <div class="delivery-check-card">
+        <button class="delivery-check-close" id="deliveryCheckClose" type="button" aria-label="Close delivery check">×</button>
+        <h2 id="deliveryCheckTitle">Delivery availability</h2>
+        <p id="deliveryCheckMessage">Checking your address...</p>
+        <div class="delivery-check-actions">
+          <a class="delivery-check-call" href="tel:0618403214">Call us</a>
+          <button class="delivery-check-continue" id="deliveryCheckContinue" type="button">Continue</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (() => {
+        let cart;
+        try { cart = JSON.parse(localStorage.getItem('mamanpaz_cart_v1') || '{}'); } catch { cart = {}; }
+        Object.keys(cart).forEach(key => {
+          const item = cart[key];
+          if (!Number.isInteger(Number(item?.id)) || !Number.isInteger(Number(item?.qty)) || item.qty < 1) delete cart[key];
+        });
+        localStorage.setItem('mamanpaz_cart_v1', JSON.stringify(cart));
+        const itemsEl = document.getElementById('checkoutItems');
+        const totalEl = document.getElementById('checkoutTotal');
+        const addressWrap = document.getElementById('checkoutAddress');
+        const contactFields = [...document.querySelectorAll('.checkout-contact-fields input')];
+        const deliveryFields = [...addressWrap.querySelectorAll('input')];
+        const addressFields = [...addressWrap.querySelectorAll('input:not([name="payment-method"])')];
+        const paymentFields = [...document.querySelectorAll('input[name="payment-method"]')];
+        const orderTime = document.getElementById('orderTime');
+        const orderTimeLabel = document.getElementById('orderTimeLabel');
+        const cityField = document.getElementById('city');
+        const postcodeField = document.getElementById('postcode');
+        const deliveryZone = document.getElementById('deliveryZone');
+        const deliveryFeeEl = document.getElementById('deliveryFee');
+        const deliveryCheckModal = document.getElementById('deliveryCheckModal');
+        const deliveryCheckMessage = document.getElementById('deliveryCheckMessage');
+        const deliveryCheckClose = document.getElementById('deliveryCheckClose');
+        const deliveryCheckContinue = document.getElementById('deliveryCheckContinue');
+        const confirmationModal = document.getElementById('confirmationModal');
+        const placeOrder = document.getElementById('placeOrder');
+        const DELIVERY_FEE = 3;
+        const DELIVERY_LIMIT_KM = 12;
+        let deliveryFee = 0;
+        let zoneStatus = 'unknown';
+        let zoneRequestId = 0;
+        let zoneTimer;
+
+        function formatPrice(num) {
+          return num.toFixed(2).replace('.', ',') + ' EUR';
+        }
+
+        function populateTimeSlots() {
+          const openingMinutes = 16 * 60 + 30;
+          const closingMinutes = 21 * 60 + 45;
+          const now = new Date();
+          const currentMinutes = now.getHours() * 60 + now.getMinutes();
+          const firstSlot = Math.max(openingMinutes, Math.ceil(currentMinutes / 15) * 15);
+          orderTime.innerHTML = '<option value="" selected disabled>Choose a time</option><option value="asap">As soon as possible</option>';
+          for (let minutes = firstSlot; minutes <= closingMinutes; minutes += 15) {
+            const hours = String(Math.floor(minutes / 60)).padStart(2, '0');
+            const remainder = String(minutes % 60).padStart(2, '0');
+            orderTime.insertAdjacentHTML('beforeend', `<option value="${hours}:${remainder}">${hours}:${remainder}</option>`);
+          }
+        }
+
+        populateTimeSlots();
+
+        function showDeliveryCheck(message, state) {
+          deliveryCheckMessage.textContent = message;
+          deliveryCheckModal.className = `delivery-check-modal ${state || ''}`;
+          deliveryCheckModal.hidden = false;
+        }
+
+        function closeDeliveryCheck() {
+          deliveryCheckModal.hidden = true;
+        }
+
+        deliveryCheckClose.addEventListener('click', closeDeliveryCheck);
+        deliveryCheckContinue.addEventListener('click', closeDeliveryCheck);
+
+        function renderCheckoutItems() {
+          const items = Object.entries(cart);
+          itemsEl.innerHTML = '';
+          if (!items.length) {
+            itemsEl.innerHTML = '<li>Your cart is empty.</li>';
+          }
+          items.forEach(([key, item]) => {
+            const li = document.createElement('li');
+            li.className = 'checkout-item';
+            li.dataset.key = key;
+            li.innerHTML = `
+              <span class="checkout-item-name">${item.name}</span>
+              <span class="checkout-item-price">${formatPrice(item.qty * item.price)}</span>
+              <span class="checkout-item-controls">
+                <button type="button" class="checkout-decrease" aria-label="Decrease ${item.name}">−</button>
+                <span class="checkout-item-quantity">${item.qty}</span>
+                <button type="button" class="checkout-increase" aria-label="Increase ${item.name}">+</button>
+                <button type="button" class="checkout-remove" aria-label="Remove ${item.name}">×</button>
+              </span>
+            `;
+            itemsEl.appendChild(li);
+          });
+          const subtotal = Object.values(cart).reduce((sum, item) => sum + item.qty * item.price, 0);
+          totalEl.textContent = 'Total: ' + formatPrice(subtotal + deliveryFee);
+          deliveryFeeEl.hidden = deliveryFee === 0;
+          deliveryFeeEl.textContent = `Delivery fee: ${formatPrice(deliveryFee)}`;
+        }
+
+        renderCheckoutItems();
+
+        itemsEl.addEventListener('click', (event) => {
+          const button = event.target.closest('button');
+          const item = button?.closest('.checkout-item');
+          if (!button || !item) return;
+          const key = item.dataset.key;
+          if (!cart[key]) return;
+          if (button.classList.contains('checkout-increase')) cart[key].qty += 1;
+          if (button.classList.contains('checkout-decrease')) {
+            cart[key].qty -= 1;
+            if (cart[key].qty <= 0) delete cart[key];
+          }
+          if (button.classList.contains('checkout-remove')) delete cart[key];
+          localStorage.setItem('mamanpaz_cart_v1', JSON.stringify(cart));
+          renderCheckoutItems();
+        });
+
+        document.querySelectorAll('input[name="order-method"]').forEach(input => {
+          input.addEventListener('change', () => {
+            const deliverySelected = input.value === 'delivery' && input.checked;
+            addressWrap.classList.toggle('visible', deliverySelected);
+            addressFields.forEach(field => field.required = deliverySelected);
+            paymentFields.forEach(field => field.required = deliverySelected);
+            orderTimeLabel.textContent = deliverySelected ? 'Delivery time' : 'Pickup time';
+            updateDeliveryZone();
+          });
+        });
+
+        function distanceInKm(first, second) {
+          const radians = value => value * Math.PI / 180;
+          const latitudeDelta = radians(second.lat - first.lat);
+          const longitudeDelta = radians(second.lon - first.lon);
+          const latitude = radians((first.lat + second.lat) / 2);
+          return Math.sqrt(latitudeDelta ** 2 + (Math.cos(latitude) * longitudeDelta) ** 2) * 6371;
+        }
+
+        async function geocode(query) {
+          const url = `https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=nl&q=${encodeURIComponent(query)}`;
+          const response = await fetch(url, { headers: { Accept: 'application/json' } });
+          if (!response.ok) throw new Error('Address lookup failed');
+          const results = await response.json();
+          if (!results.length) throw new Error('Address not found');
+          return { lat: Number(results[0].lat), lon: Number(results[0].lon) };
+        }
+
+        async function updateDeliveryZone() {
+          const deliverySelected = document.querySelector('input[name="order-method"]:checked').value === 'delivery';
+          if (!deliverySelected) {
+            zoneStatus = 'unknown';
+            deliveryFee = 0;
+            closeDeliveryCheck();
+            deliveryZone.textContent = '';
+            deliveryZone.className = 'delivery-zone';
+            renderCheckoutItems();
+            return;
+          }
+          const street = document.getElementById('street').value.trim();
+          const houseNumber = document.getElementById('houseNumber').value.trim();
+          const postcode = postcodeField.value.trim();
+          const city = cityField.value.trim();
+          if (!street || !houseNumber || !postcode || !city) {
+            zoneStatus = 'incomplete';
+            deliveryFee = 0;
+            closeDeliveryCheck();
+            deliveryZone.textContent = 'Enter your full address to check delivery distance.';
+            deliveryZone.className = 'delivery-zone';
+            renderCheckoutItems();
+            return;
+          }
+          const requestId = ++zoneRequestId;
+          zoneStatus = 'checking';
+          deliveryZone.textContent = 'Checking delivery distance...';
+          deliveryZone.className = 'delivery-zone checking';
+          try {
+            const [restaurant, customer] = await Promise.all([
+              geocode('6217 CT, Maastricht, Netherlands'),
+              geocode(`${street} ${houseNumber}, ${postcode}, ${city}, Netherlands`)
+            ]);
+            if (requestId !== zoneRequestId) return;
+            const distance = distanceInKm(restaurant, customer);
+            const inZone = distance <= DELIVERY_LIMIT_KM;
+            zoneStatus = inZone ? 'in-zone' : 'out-of-zone';
+            deliveryFee = inZone ? DELIVERY_FEE : 0;
+            deliveryZone.textContent = inZone
+              ? `Delivery available: €3,00 fee (${distance.toFixed(1)} km away).`
+              : `This address is ${distance.toFixed(1)} km away. Above 12 km, please call us to arrange delivery.`;
+            deliveryZone.className = `delivery-zone ${zoneStatus}`;
+            renderCheckoutItems();
+          } catch (error) {
+            if (requestId !== zoneRequestId) return;
+            zoneStatus = 'unavailable';
+            deliveryFee = 0;
+            deliveryZone.textContent = 'We could not check this address. Please check the details or call us.';
+            deliveryZone.className = 'delivery-zone out-of-zone';
+            renderCheckoutItems();
+          }
+        }
+
+        addressFields.forEach(field => field.addEventListener('input', () => {
+          clearTimeout(zoneTimer);
+          zoneTimer = setTimeout(updateDeliveryZone, 600);
+        }));
+
+        placeOrder.addEventListener('click', async () => {
+          const method = document.querySelector('input[name="order-method"]:checked').value;
+          if (!orderTime.value) {
+            orderTime.focus();
+            return;
+          }
+          const fieldsToValidate = method === 'delivery'
+            ? [...contactFields, ...addressFields]
+            : contactFields;
+          const missingField = fieldsToValidate.find(field => !field.value.trim());
+          if (missingField) {
+            missingField.focus();
+            return;
+          }
+          if (method === 'delivery' && zoneStatus !== 'in-zone') {
+            await updateDeliveryZone();
+          }
+          if (method === 'delivery' && zoneStatus !== 'in-zone') {
+            showDeliveryCheck('Your address is outside of our delivery zone. Please call us to arrange delivery.', 'out-of-zone');
+            cityField.focus();
+            return;
+          }
+          const orderItems = Object.values(cart).map(item => ({ id: Number(item.id), quantity: item.qty }));
+          const address = method === 'delivery'
+            ? `${document.getElementById('street').value.trim()} ${document.getElementById('houseNumber').value.trim()}, ${postcodeField.value.trim()} ${cityField.value.trim()}`
+            : '';
+          try {
+            const response = await fetch('/api/orders', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ customerName: document.getElementById('fullName').value.trim(), phone: document.getElementById('phone').value.trim(), email: document.getElementById('email').value.trim(), type: method, address, orderTime: orderTime.value, paymentMethod: document.querySelector('input[name="payment-method"]:checked').value, items: orderItems, notes: document.getElementById('instructions').value.trim() })
+            });
+            if (!response.ok) {
+              const result = await response.json().catch(() => ({}));
+              alert(result.error || 'We could not place your order. Please try again.');
+              return;
+            }
+          } catch (error) {
+            alert('The ordering service is unavailable. Please try again when the restaurant server is running.');
+            return;
+          }
+          localStorage.removeItem('mamanpaz_cart_v1');
+          confirmationModal.hidden = false;
+          placeOrder.disabled = true;
+        });
+      })();
+    </script>
+    <script src="availability-runtime.js"></script>
+    <script src="site.js"></script>
+  </body>
+</html>
