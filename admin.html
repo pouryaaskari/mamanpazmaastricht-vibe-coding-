@@ -1,16 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="admin-document">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+    <meta name="theme-color" content="#4b1117">
+    <link rel="icon" href="/icons/logomamanpaz.PNG" type="image/png">
+    <link rel="manifest" href="/manifest.webmanifest">
+    <link rel="stylesheet" href="/style.css?v=staff-dashboard-10">
     <title>Staff Dashboard | Mamanpaz Maastricht</title>
   </head>
-  <body class="menu-page admin-page">
+  <body class="admin-page">
     <main class="admin-shell">
       <section class="admin-card" id="adminLogin">
         <p class="events-kicker">Staff only</p>
-        <h1>MamanPaz Staff Login</h1>
+        <h1>Mamanpaz Staff Login</h1>
         <p class="admin-warning">Use the staff account configured on the server.</p>
         <form id="adminLoginForm" class="admin-form">
           <label for="adminUsername">Username or email</label>
@@ -28,51 +31,112 @@
             <p class="events-kicker">Staff dashboard</p>
             <h1>Restaurant control</h1>
           </div>
-          <button id="logoutAdmin" class="admin-secondary" type="button">Log out</button>
+          <div class="admin-account-actions">
+            <span id="adminLiveStatus" class="admin-live-status is-offline" role="status">Live updates connecting…</span>
+            <button id="logoutAdmin" class="admin-secondary" type="button">Log out</button>
+          </div>
         </div>
+        <div class="admin-live-tools">
+          <button id="openNotificationSettings" class="admin-secondary" type="button" aria-haspopup="dialog" aria-controls="notificationSettings">Notification Settings</button>
+          <button id="installDashboard" class="admin-secondary" type="button" hidden>Install dashboard</button>
+        </div>
+        <div class="admin-settings-backdrop" id="notificationSettings" role="dialog" aria-modal="true" aria-labelledby="notificationSettingsTitle" hidden>
+          <section class="admin-settings-panel">
+            <button id="closeNotificationSettings" class="delivery-check-close" type="button" aria-label="Close notification settings">×</button>
+            <h2 id="notificationSettingsTitle">Notification Settings</h2>
+            <label class="admin-toggle"><input id="adminSoundEnabled" type="checkbox"><span>Sound alerts</span></label>
+            <label class="admin-sound-volume" for="adminSoundVolume">Volume <input id="adminSoundVolume" type="range" min="0" max="100" step="1" value="100"><output id="adminSoundVolumeValue" for="adminSoundVolume">100%</output></label>
+            <div class="admin-notification-actions"><button id="testAdminSound" class="admin-secondary" type="button">Test sound</button><button id="stopAdminSound" class="admin-secondary" type="button">Stop sound</button></div>
+            <label class="admin-toggle"><input id="adminBrowserNotifications" type="checkbox"><span>Browser notifications</span></label>
+            <p id="browserNotificationStatus" class="admin-notification-status" role="status"></p>
+            <p id="notificationSettingsMessage" class="admin-message" role="status"></p>
+          </section>
+        </div>
+        <section id="emailFailureAlerts" class="admin-email-alerts" aria-live="polite" hidden></section>
         <nav class="admin-tabs" aria-label="Dashboard sections">
-          <button class="admin-tab active" data-panel="overviewPanel" type="button">Dashboard</button>
+          <button class="admin-tab" data-panel="overviewPanel" type="button">Dashboard</button>
           <button class="admin-tab" data-panel="menuPanel" type="button">Menu Management</button>
-          <button class="admin-tab" data-panel="ordersPanel" type="button">Orders</button>
+          <button class="admin-tab active" data-panel="ordersPanel" type="button">Orders</button>
           <button class="admin-tab" data-panel="reservationsPanel" type="button">Reservations</button>
           <button class="admin-tab" data-panel="inquiriesPanel" type="button">Event inquiries</button>
           <button class="admin-tab" data-panel="deliveryPanel" type="button">Delivery Availability</button>
+          <button class="admin-tab" data-panel="hoursPanel" type="button">Opening Hours</button>
         </nav>
 
-        <section id="overviewPanel" class="admin-panel">
+        <section id="overviewPanel" class="admin-panel" hidden>
           <div class="admin-overview-grid">
-            <div class="admin-stat"><span>Menu items</span><strong id="menuCount">0</strong></div>
-            <div class="admin-stat"><span>Unavailable</span><strong id="unavailableCount">0</strong></div>
+            <button class="admin-stat admin-stat-link" id="todayOrdersStat" type="button"><span>Today's Orders</span><strong id="todayOrderCount">0</strong></button>
+            <button class="admin-stat admin-stat-link" id="todayReservationsStat" type="button"><span>Today's Reservations</span><strong id="todayReservationCount">0</strong></button>
+            <div class="admin-stat"><span>Total orders · all time</span><strong id="totalOrderCount">0</strong></div>
             <div class="admin-stat"><span>New orders</span><strong id="newOrderCount">0</strong></div>
-            <div class="admin-stat"><span>Today reservations</span><strong id="todayReservationCount">0</strong></div>
           </div>
-          <p id="overviewMessage" class="admin-summary">Loading dashboard...</p>
+          <section class="admin-activity" aria-labelledby="activityTitle">
+            <div class="admin-section-heading"><h2 id="activityTitle">Recent activity</h2></div>
+            <div id="activityFeed" class="admin-activity-feed" aria-live="polite"><p class="admin-empty">Loading recent activity…</p></div>
+          </section>
         </section>
 
         <section id="menuPanel" class="admin-panel" hidden>
           <div class="admin-section-heading"><div><h2>Menu Management</h2><p class="admin-summary">Edit prices, availability, categories, descriptions, and display order.</p></div><button id="newMenuItem" class="admin-secondary" type="button">Add menu item</button></div>
+          <div class="admin-menu-tools"><label for="menuCategoryFilter">Category</label><select id="menuCategoryFilter"><option value="">All categories</option><option value="kebab">Kebab</option><option value="stews">Stews</option><option value="rice">Rice</option><option value="side">Side dishes</option><option value="starters">Starters</option><option value="wraps">Wraps</option><option value="desserts">Desserts</option><option value="drinks">Drinks</option><option value="sauces">Sauces</option></select><label for="menuSearch">Search menu</label><input id="menuSearch" type="search" placeholder="Find a dish or Persian name"></div>
           <div id="menuList" class="admin-table-wrap"></div>
           <form id="menuForm" class="admin-form admin-tool" hidden>
             <h2 id="menuFormTitle">Add menu item</h2>
             <input id="menuId" type="hidden">
             <label for="menuName">Name</label><input id="menuName" required>
+            <label for="menuNameFa">Persian name</label><input id="menuNameFa" dir="rtl" lang="fa">
             <label for="menuDescription">Description</label><textarea id="menuDescription" rows="3"></textarea>
             <label for="menuPrice">Price in EUR</label><input id="menuPrice" type="number" min="0" step="0.01" required>
             <label for="menuCategory">Category</label><select id="menuCategory" required><option value="kebab">Kebab</option><option value="stews">Stews</option><option value="rice">Rice</option><option value="side">Sides</option><option value="starters">Starters</option><option value="wraps">Wraps</option><option value="desserts">Desserts</option><option value="drinks">Drinks</option><option value="sauces">Sauces</option></select>
-            <label for="menuImage">Image path</label><input id="menuImage" placeholder="menu/item.png">
+            <label for="menuImageFile">Menu photo</label><input id="menuImageFile" type="file" accept="image/png,image/jpeg,image/webp,image/gif,image/*">
+            <input id="menuImage" type="hidden">
+            <div class="admin-image-preview-wrap"><img id="menuImagePreview" class="admin-image-preview" alt="Menu photo preview" hidden><p id="menuImageMessage" class="admin-message" aria-live="polite">Choose a photo from your device or photo library (maximum 4 MB).</p><button id="removeMenuImage" class="admin-secondary" type="button" hidden>Remove photo</button></div>
             <label for="menuSortOrder">Display order</label><input id="menuSortOrder" type="number" min="0" step="1" value="0">
-            <label class="admin-toggle"><input id="menuAvailable" type="checkbox" checked> Available on public menu</label>
+            <fieldset class="admin-day-picker"><legend>Available weekdays</legend><p class="admin-summary">Selected days are the only days this dish appears on the public menu. Leave all unchecked to show it daily.</p>
+              <label><input type="checkbox" value="monday" data-menu-day> Monday</label><label><input type="checkbox" value="tuesday" data-menu-day> Tuesday</label><label><input type="checkbox" value="wednesday" data-menu-day> Wednesday</label><label><input type="checkbox" value="thursday" data-menu-day> Thursday</label><label><input type="checkbox" value="friday" data-menu-day> Friday</label><label><input type="checkbox" value="saturday" data-menu-day> Saturday</label><label><input type="checkbox" value="sunday" data-menu-day> Sunday</label>
+            </fieldset>
+            <label class="admin-toggle"><input id="menuAvailable" type="checkbox" checked><span id="menuAvailabilityLabel">Visible on public menu · In stock</span></label>
             <div class="admin-form-actions"><button class="events-submit" type="submit">Save item</button><button id="cancelMenu" class="admin-secondary" type="button">Cancel</button></div>
             <p id="menuMessage" class="admin-message" aria-live="polite"></p>
           </form>
         </section>
 
-        <section id="ordersPanel" class="admin-panel" hidden><h2>Orders</h2><div id="ordersList" class="admin-table-wrap"></div></section>
-        <section id="reservationsPanel" class="admin-panel" hidden><h2>Reservations</h2><div id="reservationsList" class="admin-table-wrap"></div></section>
+        <section id="ordersPanel" class="admin-panel"><div class="admin-section-heading"><h2>Orders</h2><p id="ordersDateFilter" class="admin-date-filter" hidden>Showing today's orders. <button id="clearOrdersDateFilter" class="admin-secondary" type="button">Show all orders</button></p></div><div id="ordersList" class="admin-table-wrap"></div><details id="testNotificationPanel" class="admin-test-notification-panel" hidden><summary>Test email preview log <span>(nothing was sent)</span></summary><div id="testNotificationList" class="admin-table-wrap"></div></details></section>
+        <section id="reservationsPanel" class="admin-panel" hidden><h2>Reservations</h2><p id="reservationsDateFilter" class="admin-date-filter" hidden>Showing today's reservations. <button id="clearReservationsDateFilter" class="admin-secondary" type="button">Show all reservations</button></p><div id="reservationsList" class="admin-table-wrap"></div></section>
         <section id="inquiriesPanel" class="admin-panel" hidden><h2>Event inquiries</h2><div id="inquiriesList" class="admin-table-wrap"></div></section>
-        <section id="deliveryPanel" class="admin-panel" hidden><h2>Delivery Availability</h2><div class="admin-tool"><label class="admin-toggle"><input id="deliveryOpen" type="checkbox"> Delivery is open</label><p class="admin-summary">Turning delivery off prevents new delivery checkout selections while pickup remains available.</p><button id="saveDelivery" class="events-submit" type="button">Save delivery status</button><p id="deliveryMessage" class="admin-message" aria-live="polite"></p></div></section>
+        <section id="emailPanel" class="admin-panel" hidden><h2>Email delivery issues</h2><p id="emailConfigMessage" class="admin-summary"></p><div id="emailList" class="admin-table-wrap"></div></section>
+        <section id="deliveryPanel" class="admin-panel" hidden>
+          <h2>Delivery Availability</h2>
+          <div class="admin-tool">
+            <label class="admin-toggle"><input id="deliveryOpen" type="checkbox"> Delivery is open</label>
+            <p class="admin-summary">Turning delivery off prevents new delivery checkout selections while takeaway remains available.</p>
+            <button id="saveDelivery" class="events-submit" type="button">Save delivery status</button>
+            <p id="deliveryMessage" class="admin-message" aria-live="polite"></p>
+          </div>
+          <div class="admin-tool admin-postcode-tool">
+            <h3>Approved delivery postcodes</h3>
+            <p class="admin-summary">Only customers with a postcode on this list can place delivery orders. The list starts empty; add the areas you serve.</p>
+            <form id="deliveryPostcodeForm" class="admin-form admin-postcode-form">
+              <label for="deliveryPostcodeCountry">Country</label>
+              <select id="deliveryPostcodeCountry" required><option value="Netherlands">Netherlands</option><option value="Belgium">Belgium</option></select>
+              <label for="deliveryPostcode">Postcode</label>
+              <input id="deliveryPostcode" type="text" maxlength="16" autocomplete="off" placeholder="6217 CT" required>
+              <button class="events-submit" type="submit">Add postcode</button>
+            </form>
+            <p id="deliveryPostcodeMessage" class="admin-message" aria-live="polite"></p>
+            <div id="deliveryPostcodeList" class="admin-postcode-list" aria-live="polite"></div>
+          </div>
+        </section>
+        <section id="hoursPanel" class="admin-panel" hidden>
+          <h2>Opening hours and ordering days</h2>
+          <p class="admin-summary">Business times use Europe/Amsterdam. Closed days block both new orders and reservation requests.</p>
+          <div id="restaurantHours" class="admin-hours-grid"></div>
+          <button id="saveBusinessHours" class="events-submit" type="button">Save opening hours</button>
+          <p id="hoursMessage" class="admin-message" aria-live="polite"></p>
+        </section>
       </section>
     </main>
-    <script src="admin.js"></script>
+    <script src="/admin.js?v=staff-notification-sound-10"></script>
+    <script>if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('/sw.js').catch(() => {});</script>
   </body>
 </html>

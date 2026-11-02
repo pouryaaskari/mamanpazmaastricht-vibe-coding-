@@ -1,5 +1,7 @@
 node_modules/
 *.sqlite
+*.sqlite-*
+uploads/
 .env
 .DS_Store
 .DS_Store

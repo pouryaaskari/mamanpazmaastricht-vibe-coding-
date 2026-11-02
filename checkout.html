@@ -3,18 +3,12 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="/icons/logomamanpaz.PNG" type="image/png">
+    <link rel="stylesheet" href="style.css?v=postcode-delivery-1">
     <title>Checkout | Mamanpaz Maastricht</title>
   </head>
   <body class="menu-page checkout-page">
-    <div class="header">
-      <img class="logo" src="icons/logomamanpaz.PNG" alt="Mamanpaz logo">
-      <div class="site-title">
-        <p class="site-name">Mamanpaz Maastricht</p>
-        <p class="site-sub">Authentic Iranian Restaurant</p>
-      </div>
-      <img class="logo" src="icons/logomamanpaz.PNG" alt="Mamanpaz logo">
-    </div>
+    <div class="page-brand"><img src="icons/logomamanpaz.PNG" alt="Mamanpaz Maastricht"></div>
 
     <a class="checkout-back" href="menu.html"><img class="checkout-back-icon" src="icons/back.svg" alt=""><span>Back to menu</span></a>
 
@@ -22,6 +16,8 @@
       <section class="checkout-card" aria-labelledby="checkout-title">
         <h1 id="checkout-title">Checkout</h1>
         <p class="checkout-intro">Choose how you would like to receive your order.</p>
+        <p id="businessScheduleNotice" class="checkout-notice" role="status"></p>
+        <p id="orderingTestNotice" class="checkout-test-notice" role="status" hidden>TEST MODE — orders are saved as test records. No customer or restaurant email, payment, or delivery action will be triggered.</p>
 
         <div class="checkout-options" role="radiogroup" aria-label="Order method">
           <label class="checkout-option">
@@ -36,6 +32,11 @@
           </label>
         </div>
 
+        <label class="checkout-time" for="orderDate">
+          <span>Order date</span>
+          <input id="orderDate" type="date" required>
+        </label>
+
         <label class="checkout-time" for="orderTime">
           <span id="orderTimeLabel">Pickup time</span>
           <select id="orderTime" required>
@@ -45,37 +46,46 @@
 
         <h2 class="checkout-section-title">Your order</h2>
         <div class="checkout-summary">
+          <p id="menuAvailabilityMessage" class="checkout-availability-message" role="status" hidden></p>
           <ul id="checkoutItems"></ul>
           <div class="checkout-total" id="checkoutTotal">Total: 0,00 EUR</div>
           <div class="delivery-fee" id="deliveryFee" hidden></div>
+          <p id="deliveryMinimumMessage" class="delivery-minimum" aria-live="polite">Delivery requires at least 20,00 EUR in food items before the delivery fee. Extra bread does not count toward the minimum.</p>
         </div>
 
         <h2 class="checkout-section-title">Contact details</h2>
         <div class="checkout-fields checkout-contact-fields">
-          <label for="fullName">Name<input id="fullName" type="text" placeholder="Your full name" autocomplete="name"></label>
-          <label for="phone">Phone number<input id="phone" type="tel" placeholder="Your phone number" autocomplete="tel"></label>
-          <label for="email">Email address<input id="email" type="email" placeholder="you@example.com" autocomplete="email"></label>
+          <label for="fullName">Name<input id="fullName" type="text" placeholder="Your full name" autocomplete="name" required></label>
+          <label for="phone">Phone number<input id="phone" type="tel" placeholder="Your phone number" autocomplete="tel" required></label>
+          <label for="email">Email address<input id="email" type="email" placeholder="you@example.com" autocomplete="email" required></label>
         </div>
+        <div class="checkout-remember"><label><input id="rememberDetails" type="checkbox"> Remember my details in this tab</label><button id="clearRememberedDetails" class="checkout-clear-details" type="button" hidden>Clear saved details</button></div>
 
         <div class="checkout-address" id="checkoutAddress">
           <h2 class="checkout-section-title">Delivery address</h2>
           <div class="checkout-fields">
-            <label for="street">Street name<input id="street" type="text" placeholder="Street name" autocomplete="address-line1"></label>
-            <label for="houseNumber">House number<input id="houseNumber" class="house-number-input" type="text" placeholder="123" inputmode="numeric" maxlength="3" pattern="[0-9]{1,3}" autocomplete="address-line2"></label>
+            <label for="street">Street name<input id="street" type="text" placeholder="Street name" minlength="2" maxlength="120" autocomplete="address-line1"></label>
+            <label for="houseNumber">House number<input id="houseNumber" class="house-number-input" type="text" placeholder="45" autocomplete="off"></label>
+            <label for="addressAddition">Addition / apartment (optional)<input id="addressAddition" type="text" autocomplete="address-line2"></label>
             <label for="postcode">Postcode<input id="postcode" type="text" placeholder="6217 CT" autocomplete="postal-code"></label>
-            <label for="city">City<input id="city" type="text" placeholder="City, e.g. Maastricht" autocomplete="address-level2"></label>
+            <label for="city">City<input id="city" type="text" placeholder="City or municipality" minlength="2" maxlength="100" autocomplete="address-level2"></label>
+            <label for="country">Country<select id="country" autocomplete="country-name"><option value="Netherlands" selected>Netherlands</option><option value="Belgium">Belgium</option></select></label>
           </div>
           <p class="delivery-zone" id="deliveryZone" aria-live="polite"></p>
+          <p class="delivery-postcode-notice">We check only your postcode against the restaurant's approved delivery areas. Your address is not sent to an external service.</p>
           <fieldset class="payment-methods">
             <legend>Payment method</legend>
             <label><input type="radio" name="payment-method" value="cash" checked> Cash</label>
             <label><input type="radio" name="payment-method" value="tikkie"> Tikkie</label>
           </fieldset>
+          <label class="checkout-delivery-instructions" for="deliveryInstructions">Delivery instructions (optional)<textarea id="deliveryInstructions" autocomplete="off" placeholder="Floor, doorbell, or other delivery details"></textarea></label>
         </div>
 
         <h2 class="checkout-section-title">Special instructions</h2>
         <label class="checkout-instructions" for="instructions"><textarea id="instructions" placeholder="Add instructions for your order (optional)"></textarea></label>
 
+        <p id="checkoutError" class="checkout-error" role="alert" tabindex="-1" hidden></p>
+        <p id="checkoutProgress" class="checkout-progress" role="status" aria-live="polite"></p>
         <button class="checkout-submit" id="placeOrder" type="button">Place order</button>
       </section>
     </main>
@@ -88,115 +98,398 @@
       </div>
     </div>
 
-    <div class="delivery-check-modal" id="deliveryCheckModal" role="dialog" aria-modal="true" aria-labelledby="deliveryCheckTitle" hidden>
+    <div class="delivery-check-modal closed-day-modal" id="closedDayModal" role="dialog" aria-modal="true" aria-labelledby="closedDayTitle" aria-describedby="closedDayMessage" hidden>
       <div class="delivery-check-card">
-        <button class="delivery-check-close" id="deliveryCheckClose" type="button" aria-label="Close delivery check">×</button>
-        <h2 id="deliveryCheckTitle">Delivery availability</h2>
-        <p id="deliveryCheckMessage">Checking your address...</p>
+        <button class="delivery-check-close" id="closedDayClose" type="button" aria-label="Close notice">×</button>
+        <h2 id="closedDayTitle">We're closed that day</h2>
+        <p id="closedDayMessage">Online orders aren't available on that date. Please choose a day when we're open.</p>
         <div class="delivery-check-actions">
-          <a class="delivery-check-call" href="tel:0618403214">Call us</a>
-          <button class="delivery-check-continue" id="deliveryCheckContinue" type="button">Continue</button>
+          <button class="delivery-check-continue" id="closedDayContinue" type="button">Choose another day</button>
         </div>
       </div>
     </div>
 
+    <script src="cart-store.js"></script>
     <script>
       (() => {
-        let cart;
-        try { cart = JSON.parse(localStorage.getItem('mamanpaz_cart_v1') || '{}'); } catch { cart = {}; }
-        Object.keys(cart).forEach(key => {
-          const item = cart[key];
-          if (!Number.isInteger(Number(item?.id)) || !Number.isInteger(Number(item?.qty)) || item.qty < 1) delete cart[key];
-        });
-        localStorage.setItem('mamanpaz_cart_v1', JSON.stringify(cart));
+        let cart = window.MamanpazCart.read();
         const itemsEl = document.getElementById('checkoutItems');
         const totalEl = document.getElementById('checkoutTotal');
+        const menuAvailabilityMessage = document.getElementById('menuAvailabilityMessage');
         const addressWrap = document.getElementById('checkoutAddress');
         const contactFields = [...document.querySelectorAll('.checkout-contact-fields input')];
-        const deliveryFields = [...addressWrap.querySelectorAll('input')];
-        const addressFields = [...addressWrap.querySelectorAll('input:not([name="payment-method"])')];
+        const addressFields = [...addressWrap.querySelectorAll('input:not([name="payment-method"]), select')];
+        const requiredAddressFields = ['street', 'houseNumber', 'postcode', 'city', 'country'].map(id => document.getElementById(id));
         const paymentFields = [...document.querySelectorAll('input[name="payment-method"]')];
+        const orderDate = document.getElementById('orderDate');
         const orderTime = document.getElementById('orderTime');
         const orderTimeLabel = document.getElementById('orderTimeLabel');
         const cityField = document.getElementById('city');
         const postcodeField = document.getElementById('postcode');
         const deliveryZone = document.getElementById('deliveryZone');
         const deliveryFeeEl = document.getElementById('deliveryFee');
-        const deliveryCheckModal = document.getElementById('deliveryCheckModal');
-        const deliveryCheckMessage = document.getElementById('deliveryCheckMessage');
-        const deliveryCheckClose = document.getElementById('deliveryCheckClose');
-        const deliveryCheckContinue = document.getElementById('deliveryCheckContinue');
+        const closedDayModal = document.getElementById('closedDayModal');
+        const closedDayClose = document.getElementById('closedDayClose');
+        const closedDayContinue = document.getElementById('closedDayContinue');
         const confirmationModal = document.getElementById('confirmationModal');
         const placeOrder = document.getElementById('placeOrder');
+        const deliveryMinimumMessage = document.getElementById('deliveryMinimumMessage');
+        const businessScheduleNotice = document.getElementById('businessScheduleNotice');
+        const checkoutError = document.getElementById('checkoutError');
+        const checkoutProgress = document.getElementById('checkoutProgress');
+        const rememberDetails = document.getElementById('rememberDetails');
+        const clearRememberedDetails = document.getElementById('clearRememberedDetails');
+        const pendingOrderKey = 'mamanpaz_pending_order_v1';
+        let pendingOrder = null;
+        try { pendingOrder = JSON.parse(sessionStorage.getItem(pendingOrderKey) || 'null'); } catch (_) { sessionStorage.removeItem(pendingOrderKey); }
+        let orderTimesAvailable = false;
+        let availableOrderSlots = [];
+        let asapAvailable = false;
+        let scheduleNotice = '';
+        let availableLeadMinutes = 0;
+        let testModeActive = false;
+        let serverToday = '';
+        let wrapSauceUnitPrice = 0.5;
+        Object.values(cart).forEach(item => {
+          if (!item || item.kind === 'extra') return;
+          item.sauceIds = item.sauceIds || (item.sauceId ? [Number(item.sauceId)] : []);
+          item.breadPrice = item.breadPerItem ? 1 : 0;
+          item.saucePrice = item.sauceIds.length * wrapSauceUnitPrice + item.breadPrice;
+        });
+        let slotsRequestId = 0;
+        let submissionInProgress = false;
+        let orderConfirmed = false;
         const DELIVERY_FEE = 3;
-        const DELIVERY_LIMIT_KM = 12;
         let deliveryFee = 0;
+        let unavailableCartNames = [];
+        let latestMenuItems = null;
+        let menuAvailabilityError = '';
         let zoneStatus = 'unknown';
         let zoneRequestId = 0;
         let zoneTimer;
+        fetch('/api/settings/order-mode', { headers: { Accept: 'application/json' }, cache: 'no-store' })
+          .then(response => response.ok ? response.json() : null)
+          .then(data => { testModeActive = Boolean(data?.testMode); document.getElementById('orderingTestNotice').hidden = !testModeActive; })
+          .catch(() => {});
 
         function formatPrice(num) {
           return num.toFixed(2).replace('.', ',') + ' EUR';
         }
 
-        function populateTimeSlots() {
-          const openingMinutes = 16 * 60 + 30;
-          const closingMinutes = 21 * 60 + 45;
-          const now = new Date();
-          const currentMinutes = now.getHours() * 60 + now.getMinutes();
-          const firstSlot = Math.max(openingMinutes, Math.ceil(currentMinutes / 15) * 15);
-          orderTime.innerHTML = '<option value="" selected disabled>Choose a time</option><option value="asap">As soon as possible</option>';
-          for (let minutes = firstSlot; minutes <= closingMinutes; minutes += 15) {
-            const hours = String(Math.floor(minutes / 60)).padStart(2, '0');
-            const remainder = String(minutes % 60).padStart(2, '0');
-            orderTime.insertAdjacentHTML('beforeend', `<option value="${hours}:${remainder}">${hours}:${remainder}</option>`);
+        const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]);
+        function saveCart() { cart = window.MamanpazCart.write(cart); }
+        function foodSubtotal() { return Object.values(cart).filter(item => item.kind !== 'extra').reduce((sum, item) => sum + Number(item.qty) * (Number(item.price) + (item.sauceIds?.length || (item.sauceId ? 1 : 0)) * wrapSauceUnitPrice), 0); }
+        function availabilityDays(item) {
+          if (!item) return [];
+          try {
+            const days = Array.isArray(item.available_days) ? item.available_days : JSON.parse(item.available_days || '[]');
+            return Array.isArray(days) ? days : [];
+          } catch (error) {
+            console.error('Could not read the selected menu item schedule.', error);
+            return [];
+          }
+        }
+        function menuItemAvailableForSelectedDate(item) {
+          if (!item || !Boolean(item.available)) return false;
+          const days = availabilityDays(item);
+          if (!days.length || !orderDate.value) return true;
+          const weekday = new Date(`${orderDate.value}T12:00:00Z`).toLocaleDateString('en-US', { timeZone: 'UTC', weekday: 'long' }).toLowerCase();
+          return days.includes(weekday);
+        }
+        function updateCartAvailability() {
+          if (!latestMenuItems) {
+            unavailableCartNames = [];
+            return;
+          }
+          unavailableCartNames = [...new Set(Object.values(cart)
+            .filter(item => item.kind !== 'extra')
+            .filter(item => {
+              const current = latestMenuItems.get(Number(item.id));
+              const sauceIds = item.sauceIds || (item.sauceId ? [item.sauceId] : []);
+              return !menuItemAvailableForSelectedDate(current)
+                || sauceIds.some(id => !menuItemAvailableForSelectedDate(latestMenuItems.get(Number(id))));
+            })
+            .map(item => item.name))];
+        }
+
+        function updateOrderTimeOptions(selectedTime = '') {
+          const dateSlots = availableOrderSlots.filter(slot => slot.date === orderDate.value);
+          const options = ['<option value="" selected disabled>Choose a time</option>'];
+          if (asapAvailable && orderDate.value === availableOrderSlots[0]?.date) options.push('<option value="asap">As soon as possible</option>');
+          for (const slot of dateSlots) options.push(`<option value="${slot.time}">${slot.time}</option>`);
+          if (!dateSlots.length && !(asapAvailable && orderDate.value === availableOrderSlots[0]?.date)) {
+            options.push('<option value="" disabled>No times available on this date</option>');
+          }
+          orderTime.innerHTML = options.join('');
+          if ([...orderTime.options].some(option => option.value === selectedTime)) orderTime.value = selectedTime;
+          orderTime.disabled = !dateSlots.length && !(asapAvailable && orderDate.value === availableOrderSlots[0]?.date);
+          const isDelivery = document.querySelector('input[name="order-method"]:checked').value === 'delivery';
+          businessScheduleNotice.textContent = orderTime.disabled
+            ? 'Ordering is not available on this date. Choose a date with available times.'
+            : asapAvailable && isDelivery && orderTime.value === 'asap'
+              ? `As soon as possible uses the earliest available delivery slot (at least ${availableLeadMinutes} minutes from now).`
+              : scheduleNotice;
+          renderCheckoutItems();
+        }
+
+        async function loadOrderTimes(preserveSelection = true) {
+          const requestId = ++slotsRequestId;
+          const selectedDate = preserveSelection ? orderDate.value : '';
+          const selectedTime = preserveSelection ? orderTime.value : '';
+          const type = document.querySelector('input[name="order-method"]:checked').value === 'delivery' ? 'delivery' : 'pickup';
+          orderTimesAvailable = false;
+          availableOrderSlots = [];
+          asapAvailable = false;
+          orderDate.disabled = true;
+          orderTime.disabled = true;
+          orderTime.innerHTML = '<option value="">Loading available times…</option>';
+          const endpoint = `/api/order-slots?type=${type}`;
+          try {
+            const controller = new AbortController();
+            const timer = setTimeout(() => controller.abort(), 7000);
+            let response;
+            try { response = await fetch(endpoint, { headers: { Accept: 'application/json' }, signal: controller.signal, cache: 'no-store' }); }
+            finally { clearTimeout(timer); }
+            if (!response.ok) throw new Error('The restaurant could not provide available order times.');
+            const data = await response.json();
+            if (requestId !== slotsRequestId) return;
+            if (!data || !Array.isArray(data.slots) || typeof data.testMode !== 'boolean' || typeof data.today !== 'string') {
+              throw new Error('The ordering service returned an invalid availability response.');
+            }
+            if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+              console.info('[order-slots] response', { type, count: data.slots.length, asap: Boolean(data.asap), testMode: data.testMode, timezone: data.timezone });
+            }
+            serverToday = data.today;
+            testModeActive = Boolean(data.testMode);
+            document.getElementById('orderingTestNotice').hidden = !testModeActive;
+            availableOrderSlots = data.slots;
+            asapAvailable = Boolean(data.asap);
+            orderTimesAvailable = Boolean(data.asap || data.slots.length);
+            const lastDate = new Date(`${data.today}T12:00:00Z`);
+            lastDate.setUTCDate(lastDate.getUTCDate() + 20);
+            orderDate.min = data.today;
+            orderDate.max = lastDate.toISOString().slice(0, 10);
+            const availableDates = [...new Set(data.slots.map(slot => slot.date))];
+            const date = availableDates.includes(selectedDate) ? selectedDate : availableDates[0] || data.today;
+            orderDate.value = date;
+            orderDate.disabled = !availableDates.length;
+            availableLeadMinutes = data.leadMinutes;
+            const isDelivery = type === 'delivery';
+            scheduleNotice = !orderTimesAvailable
+              ? `${isDelivery ? 'Delivery' : 'Ordering'} has no available time slots. Please contact the restaurant.`
+              : data.testMode ? `Test slots are available while the restaurant is closed. ${isDelivery ? 'Delivery' : 'Pickup'} has a ${data.leadMinutes}-minute minimum lead time.`
+                : data.asap && isDelivery ? `As soon as possible uses the earliest available delivery slot (at least ${data.leadMinutes} minutes from now).`
+                  : data.asap ? ''
+                : `The first scheduled ${isDelivery ? 'delivery' : 'pickup'} is available ${isDelivery ? `at least ${data.leadMinutes} minutes from now` : 'during opening hours'}. Times use ${data.timezone}.`;
+            const deliveryOption = document.querySelector('label.checkout-option:has(input[value="delivery"])');
+            deliveryOption.classList.toggle('is-disabled', isDelivery && !orderTimesAvailable);
+            updateOrderTimeOptions(selectedTime);
+          } catch (error) {
+            if (requestId !== slotsRequestId) return;
+            orderTimesAvailable = false;
+            availableOrderSlots = [];
+            asapAvailable = false;
+            orderDate.disabled = true;
+            orderTime.innerHTML = '<option value="">Order times could not be loaded</option>';
+            orderTime.disabled = true;
+            scheduleNotice = '';
+            businessScheduleNotice.textContent = error.name === 'AbortError'
+              ? 'The request for order times timed out. Check that the restaurant server is running, then change order type to try again.'
+              : `${error.message || 'Could not load available times.'} Check that the restaurant server is running, then change order type to try again.`;
+            if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') console.error('[order-slots] request failed', { type, message: error.message });
+            renderCheckoutItems();
           }
         }
 
-        populateTimeSlots();
-
-        function showDeliveryCheck(message, state) {
-          deliveryCheckMessage.textContent = message;
-          deliveryCheckModal.className = `delivery-check-modal ${state || ''}`;
-          deliveryCheckModal.hidden = false;
-        }
-
-        function closeDeliveryCheck() {
-          deliveryCheckModal.hidden = true;
-        }
-
-        deliveryCheckClose.addEventListener('click', closeDeliveryCheck);
-        deliveryCheckContinue.addEventListener('click', closeDeliveryCheck);
+        const closeClosedDayNotice = () => {
+          closedDayModal.hidden = true;
+          orderDate.focus();
+        };
+        closedDayClose.addEventListener('click', closeClosedDayNotice);
+        closedDayContinue.addEventListener('click', closeClosedDayNotice);
 
         function renderCheckoutItems() {
+          updateCartAvailability();
           const items = Object.entries(cart);
           itemsEl.innerHTML = '';
           if (!items.length) {
-            itemsEl.innerHTML = '<li>Your cart is empty.</li>';
+            itemsEl.innerHTML = '<li class="checkout-empty">Your cart is empty. <a href="menu.html">Return to the menu</a> to add items.</li>';
           }
           items.forEach(([key, item]) => {
             const li = document.createElement('li');
             li.className = 'checkout-item';
             li.dataset.key = key;
             li.innerHTML = `
-              <span class="checkout-item-name">${item.name}</span>
-              <span class="checkout-item-price">${formatPrice(item.qty * item.price)}</span>
+              <span class="checkout-item-name">${escapeHtml(item.name)}${item.sauceName ? ` · ${escapeHtml(item.sauceName)}` : ''}</span>
+              <span class="checkout-item-price">${formatPrice(item.qty * (Number(item.price) + Number(item.saucePrice || 0)))}</span>
               <span class="checkout-item-controls">
-                <button type="button" class="checkout-decrease" aria-label="Decrease ${item.name}">−</button>
+                <button type="button" class="checkout-decrease" aria-label="Decrease ${escapeHtml(item.name)}">−</button>
                 <span class="checkout-item-quantity">${item.qty}</span>
-                <button type="button" class="checkout-increase" aria-label="Increase ${item.name}">+</button>
-                <button type="button" class="checkout-remove" aria-label="Remove ${item.name}">×</button>
+                <button type="button" class="checkout-increase" aria-label="Increase ${escapeHtml(item.name)}">+</button>
+                <button type="button" class="checkout-remove" aria-label="Remove ${escapeHtml(item.name)}">×</button>
               </span>
             `;
             itemsEl.appendChild(li);
           });
-          const subtotal = Object.values(cart).reduce((sum, item) => sum + item.qty * item.price, 0);
+          const subtotal = Object.values(cart).reduce((sum, item) => sum + item.qty * (Number(item.price) + Number(item.saucePrice || 0)), 0);
           totalEl.textContent = 'Total: ' + formatPrice(subtotal + deliveryFee);
+          menuAvailabilityMessage.hidden = !menuAvailabilityError && !unavailableCartNames.length;
+          menuAvailabilityMessage.textContent = menuAvailabilityError || (unavailableCartNames.length
+            ? `${unavailableCartNames.join(', ')} ${unavailableCartNames.length === 1 ? 'is' : 'are'} sold out or not available on the selected date. Change the date or remove ${unavailableCartNames.length === 1 ? 'it' : 'them'} to continue.`
+            : '');
           deliveryFeeEl.hidden = deliveryFee === 0;
           deliveryFeeEl.textContent = `Delivery fee: ${formatPrice(deliveryFee)}`;
+          const isDelivery = document.querySelector('input[name="order-method"]:checked').value === 'delivery';
+          const shortBy = Math.max(0, 20 - foodSubtotal());
+          deliveryMinimumMessage.textContent = isDelivery && shortBy > 0 ? `Delivery minimum: add ${formatPrice(shortBy)} more in food items (20,00 EUR minimum).` : 'Delivery requires at least 20,00 EUR in food items before the delivery fee. Extra bread does not count toward the minimum.';
+          deliveryMinimumMessage.hidden = !isDelivery;
+          const retryingSavedOrder = Boolean(pendingOrder?.body);
+          placeOrder.disabled = orderConfirmed || submissionInProgress || (!orderTimesAvailable && !retryingSavedOrder) || (!retryingSavedOrder && (!orderDate.value || !orderTime.value || unavailableCartNames.length > 0 || Object.values(cart).every(item => item.kind === 'extra') || (isDelivery && shortBy > 0)));
         }
 
         renderCheckoutItems();
+
+        async function refreshMenuState() {
+          try {
+            const response = await fetch('/api/menu', { headers: { Accept: 'application/json' } });
+            if (!response.ok) throw new Error('Could not refresh current menu availability.');
+            const data = await response.json();
+            if (!Array.isArray(data.items)) throw new Error('The menu availability response was invalid.');
+            const byId = new Map(data.items.map(item => [Number(item.id), item]));
+            latestMenuItems = byId;
+            menuAvailabilityError = '';
+            wrapSauceUnitPrice = (Number(data.wrapSaucePriceCents) || 50) / 100;
+            Object.values(cart).filter(item => item.kind !== 'extra').forEach(item => {
+              const current = byId.get(Number(item.id));
+              const sauceIds = item.sauceIds || (item.sauceId ? [item.sauceId] : []);
+              const sauces = sauceIds.map(id => byId.get(Number(id)));
+              if (!current || sauces.some(sauce => !sauce)) return;
+              item.name = current.name; item.price = current.price_cents / 100;
+              item.sauceName = `${sauces.map(sauce => sauce.name).join(', ')}${item.breadPerItem ? `${sauceIds.length ? ' · ' : ''}Extra bread` : ''}`;
+              item.breadPrice = item.breadPerItem ? 1 : 0;
+              item.saucePrice = sauceIds.length * wrapSauceUnitPrice + item.breadPrice;
+            });
+            saveCart();
+            renderCheckoutItems();
+          } catch (error) {
+            menuAvailabilityError = 'Could not refresh menu availability. We will verify it again before submitting your order.';
+            renderCheckoutItems();
+            console.error('Could not refresh checkout menu availability.', error);
+          }
+        }
+
+        refreshMenuState();
+        window.setInterval(() => { if (!document.hidden && !submissionInProgress) loadOrderTimes(); }, 60000);
+        document.addEventListener('visibilitychange', () => { if (!document.hidden && !submissionInProgress) loadOrderTimes(); });
+
+        async function checkCartAvailability() {
+          const controller = new AbortController();
+          const timer = setTimeout(() => controller.abort(), 7000);
+          let response;
+          try { response = await fetch('/api/menu', { headers: { Accept: 'application/json' }, signal: controller.signal, cache: 'no-store' }); }
+          finally { clearTimeout(timer); }
+          if (!response.ok) throw new Error('Could not check current menu availability. Please try again.');
+          const { items } = await response.json();
+          if (!Array.isArray(items)) throw new Error('The menu availability response was invalid. Please try again.');
+          latestMenuItems = new Map(items.map(item => [Number(item.id), item]));
+          menuAvailabilityError = '';
+          updateCartAvailability();
+          if (unavailableCartNames.length) throw new Error(`${unavailableCartNames.join(', ')} is sold out or not available on the selected date. Change the date or remove it from your cart.`);
+        }
+
+        function orderRequestId() {
+          let id = sessionStorage.getItem('mamanpaz_order_request_id');
+          if (!id) { id = globalThis.crypto?.randomUUID?.() || 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => { const r = Math.random() * 16 | 0; return (c === 'x' ? r : (r & 3 | 8)).toString(16); }); sessionStorage.setItem('mamanpaz_order_request_id', id); }
+          return id;
+        }
+
+        function setSubmitting(active, message = '') {
+          submissionInProgress = active;
+          placeOrder.disabled = active || (!orderTimesAvailable && !pendingOrder?.body);
+          placeOrder.textContent = active ? 'Placing order…' : pendingOrder ? 'Retry order safely' : 'Place order';
+          placeOrder.setAttribute('aria-busy', String(active));
+          checkoutProgress.textContent = message;
+          if (!active) renderCheckoutItems();
+        }
+
+        function showOrderError(message) {
+          checkoutError.textContent = message;
+          checkoutError.hidden = false;
+          checkoutError.focus?.();
+        }
+
+        function saveRememberedDetails() {
+          const remembered = {
+            name: document.getElementById('fullName').value,
+            phone: document.getElementById('phone').value,
+            email: document.getElementById('email').value,
+            street: document.getElementById('street').value,
+            houseNumber: document.getElementById('houseNumber').value,
+            addition: document.getElementById('addressAddition').value,
+            postcode: postcodeField.value,
+            city: cityField.value,
+            country: document.getElementById('country').value
+          };
+          sessionStorage.setItem('mamanpaz_customer_details_v1', JSON.stringify(remembered));
+          sessionStorage.setItem('mamanpaz_remember_details_v1', 'yes');
+        }
+
+        function restoreRememberedDetails() {
+          if (sessionStorage.getItem('mamanpaz_remember_details_v1') !== 'yes') return;
+          try {
+            const details = JSON.parse(sessionStorage.getItem('mamanpaz_customer_details_v1') || '{}');
+            const map = { name: 'fullName', phone: 'phone', email: 'email', street: 'street', houseNumber: 'houseNumber', addition: 'addressAddition', postcode: 'postcode', city: 'city', country: 'country' };
+            Object.entries(map).forEach(([key, id]) => { if (details[key] && !document.getElementById(id).value) document.getElementById(id).value = details[key]; });
+            rememberDetails.checked = true;
+            clearRememberedDetails.hidden = false;
+          } catch (_) { sessionStorage.removeItem('mamanpaz_customer_details_v1'); }
+        }
+
+        restoreRememberedDetails();
+        clearRememberedDetails.addEventListener('click', () => {
+          sessionStorage.removeItem('mamanpaz_customer_details_v1');
+          sessionStorage.removeItem('mamanpaz_remember_details_v1');
+          rememberDetails.checked = false;
+          clearRememberedDetails.hidden = true;
+        });
+        rememberDetails.addEventListener('change', () => {
+          clearRememberedDetails.hidden = !rememberDetails.checked;
+          if (rememberDetails.checked) saveRememberedDetails();
+          else { sessionStorage.removeItem('mamanpaz_customer_details_v1'); sessionStorage.removeItem('mamanpaz_remember_details_v1'); }
+        });
+        contactFields.concat(addressFields).forEach(field => field.addEventListener('change', () => { if (rememberDetails.checked) saveRememberedDetails(); }));
+        if (pendingOrder?.formData) {
+          const form = { name: 'fullName', phone: 'phone', email: 'email', street: 'street', houseNumber: 'houseNumber', addition: 'addressAddition', postcode: 'postcode', city: 'city', country: 'country' };
+          Object.entries(form).forEach(([key, id]) => { document.getElementById(id).value = pendingOrder.formData[key] || ''; });
+          document.querySelector(`input[name="order-method"][value="${pendingOrder.body.type === 'delivery' ? 'delivery' : 'takeaway'}"]`).checked = true;
+          addressWrap.classList.toggle('visible', pendingOrder.body.type === 'delivery');
+          requiredAddressFields.forEach(field => field.required = pendingOrder.body.type === 'delivery');
+          orderTimeLabel.textContent = pendingOrder.body.type === 'delivery' ? 'Delivery time' : 'Pickup time';
+          checkoutProgress.textContent = 'A previous order request did not receive a confirmation. Retry the same order safely to check whether it was saved.';
+          placeOrder.textContent = 'Retry order safely';
+          document.querySelectorAll('input[name="order-method"]').forEach(input => { input.disabled = true; });
+        }
+
+        function syncOrderMethodUI() {
+          const deliverySelected = document.querySelector('input[name="order-method"]:checked').value === 'delivery';
+          addressWrap.classList.toggle('visible', deliverySelected);
+          requiredAddressFields.forEach(field => field.required = deliverySelected);
+          paymentFields.forEach(field => field.required = deliverySelected);
+          orderTimeLabel.textContent = deliverySelected ? 'Delivery time' : 'Pickup time';
+        }
+
+        // Browsers can restore a radio selection when returning from the menu.
+        // Reapply the matching address and time UI even when no change event fires.
+        syncOrderMethodUI();
+        loadOrderTimes(false);
+        orderDate.addEventListener('change', () => {
+          const availableDates = new Set(availableOrderSlots.map(slot => slot.date));
+          if (orderDate.value && !availableDates.has(orderDate.value)) closedDayModal.hidden = false;
+          updateOrderTimeOptions();
+        });
+        orderTime.addEventListener('change', () => {
+          updateOrderTimeOptions(orderTime.value);
+        });
 
         itemsEl.addEventListener('click', (event) => {
           const button = event.target.closest('button');
@@ -204,146 +497,179 @@
           if (!button || !item) return;
           const key = item.dataset.key;
           if (!cart[key]) return;
-          if (button.classList.contains('checkout-increase')) cart[key].qty += 1;
+          if (button.classList.contains('checkout-increase')) cart[key].qty = Math.min(30, Number(cart[key].qty) + 1);
           if (button.classList.contains('checkout-decrease')) {
-            cart[key].qty -= 1;
+            cart[key].qty = Number(cart[key].qty) - 1;
             if (cart[key].qty <= 0) delete cart[key];
           }
           if (button.classList.contains('checkout-remove')) delete cart[key];
-          localStorage.setItem('mamanpaz_cart_v1', JSON.stringify(cart));
+          saveCart();
           renderCheckoutItems();
         });
 
+        window.addEventListener('storage', event => {
+          if (event.key !== window.MamanpazCart.key) return;
+          cart = window.MamanpazCart.read();
+          renderCheckoutItems();
+        });
         document.querySelectorAll('input[name="order-method"]').forEach(input => {
           input.addEventListener('change', () => {
             const deliverySelected = input.value === 'delivery' && input.checked;
-            addressWrap.classList.toggle('visible', deliverySelected);
-            addressFields.forEach(field => field.required = deliverySelected);
-            paymentFields.forEach(field => field.required = deliverySelected);
-            orderTimeLabel.textContent = deliverySelected ? 'Delivery time' : 'Pickup time';
+            syncOrderMethodUI();
             updateDeliveryZone();
+            loadOrderTimes(false);
           });
         });
 
-        function distanceInKm(first, second) {
-          const radians = value => value * Math.PI / 180;
-          const latitudeDelta = radians(second.lat - first.lat);
-          const longitudeDelta = radians(second.lon - first.lon);
-          const latitude = radians((first.lat + second.lat) / 2);
-          return Math.sqrt(latitudeDelta ** 2 + (Math.cos(latitude) * longitudeDelta) ** 2) * 6371;
-        }
-
-        async function geocode(query) {
-          const url = `https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=nl&q=${encodeURIComponent(query)}`;
-          const response = await fetch(url, { headers: { Accept: 'application/json' } });
-          if (!response.ok) throw new Error('Address lookup failed');
-          const results = await response.json();
-          if (!results.length) throw new Error('Address not found');
-          return { lat: Number(results[0].lat), lon: Number(results[0].lon) };
-        }
-
         async function updateDeliveryZone() {
+          const requestId = ++zoneRequestId;
           const deliverySelected = document.querySelector('input[name="order-method"]:checked').value === 'delivery';
           if (!deliverySelected) {
             zoneStatus = 'unknown';
             deliveryFee = 0;
-            closeDeliveryCheck();
             deliveryZone.textContent = '';
             deliveryZone.className = 'delivery-zone';
             renderCheckoutItems();
             return;
           }
-          const street = document.getElementById('street').value.trim();
-          const houseNumber = document.getElementById('houseNumber').value.trim();
           const postcode = postcodeField.value.trim();
-          const city = cityField.value.trim();
-          if (!street || !houseNumber || !postcode || !city) {
+          const country = document.getElementById('country').value;
+          if (!postcode) {
             zoneStatus = 'incomplete';
             deliveryFee = 0;
-            closeDeliveryCheck();
-            deliveryZone.textContent = 'Enter your full address to check delivery distance.';
+            deliveryZone.textContent = 'Enter your postcode to check whether delivery is available.';
             deliveryZone.className = 'delivery-zone';
             renderCheckoutItems();
             return;
           }
-          const requestId = ++zoneRequestId;
           zoneStatus = 'checking';
-          deliveryZone.textContent = 'Checking delivery distance...';
+          deliveryFee = 0;
+          deliveryZone.textContent = 'Checking delivery postcode...';
           deliveryZone.className = 'delivery-zone checking';
           try {
-            const [restaurant, customer] = await Promise.all([
-              geocode('6217 CT, Maastricht, Netherlands'),
-              geocode(`${street} ${houseNumber}, ${postcode}, ${city}, Netherlands`)
-            ]);
+            const response = await fetch('/api/delivery/eligibility', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+              body: JSON.stringify({ postcode, country })
+            });
+            const result = await response.json().catch(() => null);
             if (requestId !== zoneRequestId) return;
-            const distance = distanceInKm(restaurant, customer);
-            const inZone = distance <= DELIVERY_LIMIT_KM;
+            if (!response.ok) throw new Error(result?.error || 'Could not check this postcode.');
+            if (typeof result?.available !== 'boolean' || typeof result.message !== 'string') throw new Error('Postcode eligibility returned an invalid result.');
+            const inZone = result.available;
             zoneStatus = inZone ? 'in-zone' : 'out-of-zone';
             deliveryFee = inZone ? DELIVERY_FEE : 0;
-            deliveryZone.textContent = inZone
-              ? `Delivery available: €3,00 fee (${distance.toFixed(1)} km away).`
-              : `This address is ${distance.toFixed(1)} km away. Above 12 km, please call us to arrange delivery.`;
+            deliveryZone.textContent = result.message;
             deliveryZone.className = `delivery-zone ${zoneStatus}`;
             renderCheckoutItems();
           } catch (error) {
             if (requestId !== zoneRequestId) return;
             zoneStatus = 'unavailable';
             deliveryFee = 0;
-            deliveryZone.textContent = 'We could not check this address. Please check the details or call us.';
+            deliveryZone.textContent = error.message || 'We could not check this postcode. Please try again.';
             deliveryZone.className = 'delivery-zone out-of-zone';
             renderCheckoutItems();
           }
         }
 
-        addressFields.forEach(field => field.addEventListener('input', () => {
+        function scheduleDeliveryPostcodeCheck() {
+          zoneRequestId += 1;
+          zoneStatus = 'checking';
+          deliveryFee = 0;
+          deliveryZone.textContent = 'Checking delivery postcode...';
+          deliveryZone.className = 'delivery-zone checking';
           clearTimeout(zoneTimer);
           zoneTimer = setTimeout(updateDeliveryZone, 600);
-        }));
+          renderCheckoutItems();
+        }
+
+        postcodeField.addEventListener('input', scheduleDeliveryPostcodeCheck);
+        document.getElementById('country').addEventListener('change', scheduleDeliveryPostcodeCheck);
 
         placeOrder.addEventListener('click', async () => {
+          if (submissionInProgress || placeOrder.disabled) return;
+          checkoutError.hidden = true;
+          if ((!orderDate.value || !orderTime.value) && !pendingOrder) { (!orderDate.value ? orderDate : orderTime).focus(); showOrderError('Choose an available order date and time before continuing.'); return; }
           const method = document.querySelector('input[name="order-method"]:checked').value;
-          if (!orderTime.value) {
-            orderTime.focus();
-            return;
-          }
-          const fieldsToValidate = method === 'delivery'
-            ? [...contactFields, ...addressFields]
-            : contactFields;
-          const missingField = fieldsToValidate.find(field => !field.value.trim());
-          if (missingField) {
-            missingField.focus();
-            return;
-          }
-          if (method === 'delivery' && zoneStatus !== 'in-zone') {
-            await updateDeliveryZone();
-          }
-          if (method === 'delivery' && zoneStatus !== 'in-zone') {
-            showDeliveryCheck('Your address is outside of our delivery zone. Please call us to arrange delivery.', 'out-of-zone');
-            cityField.focus();
-            return;
-          }
-          const orderItems = Object.values(cart).map(item => ({ id: Number(item.id), quantity: item.qty }));
-          const address = method === 'delivery'
-            ? `${document.getElementById('street').value.trim()} ${document.getElementById('houseNumber').value.trim()}, ${postcodeField.value.trim()} ${cityField.value.trim()}`
-            : '';
-          try {
-            const response = await fetch('/api/orders', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ customerName: document.getElementById('fullName').value.trim(), phone: document.getElementById('phone').value.trim(), email: document.getElementById('email').value.trim(), type: method, address, orderTime: orderTime.value, paymentMethod: document.querySelector('input[name="payment-method"]:checked').value, items: orderItems, notes: document.getElementById('instructions').value.trim() })
-            });
-            if (!response.ok) {
-              const result = await response.json().catch(() => ({}));
-              alert(result.error || 'We could not place your order. Please try again.');
+          let body;
+          if (pendingOrder?.body) {
+            body = pendingOrder.body;
+          } else {
+            const fieldsToValidate = method === 'delivery' ? [...contactFields, ...requiredAddressFields] : contactFields;
+            const invalidField = fieldsToValidate.find(field => !field.checkValidity());
+            if (invalidField) { invalidField.reportValidity(); return; }
+            if (method === 'delivery' && foodSubtotal() < 20) {
+              deliveryMinimumMessage.focus?.();
+              showOrderError(`Delivery orders require at least 20,00 EUR in food. Add ${formatPrice(20 - foodSubtotal())} more.`);
               return;
             }
-          } catch (error) {
-            alert('The ordering service is unavailable. Please try again when the restaurant server is running.');
-            return;
+            body = {
+              requestId: orderRequestId(),
+              customerName: document.getElementById('fullName').value.trim(),
+              phone: document.getElementById('phone').value.trim(),
+              email: document.getElementById('email').value.trim(),
+              type: method === 'takeaway' ? 'pickup' : 'delivery',
+              deliveryAddress: method === 'delivery' ? { street: document.getElementById('street').value.trim(), houseNumber: document.getElementById('houseNumber').value.trim(), addition: document.getElementById('addressAddition').value.trim(), postcode: postcodeField.value.trim(), city: cityField.value.trim(), country: document.getElementById('country').value, instructions: document.getElementById('deliveryInstructions').value.trim() } : undefined,
+              orderDate: orderTime.value === 'asap' ? serverToday : orderDate.value,
+              orderTime: orderTime.value,
+              paymentMethod: document.querySelector('input[name="payment-method"]:checked').value,
+              items: Object.values(cart).filter(item => item.kind !== 'extra').map(item => ({ id: Number(item.id), quantity: item.qty, sauceIds: item.sauceIds || (item.sauceId ? [item.sauceId] : []), breadQuantity: item.breadPerItem ? item.qty : 0 })),
+              breadQuantity: Number(cart.extra_bread?.qty || 0),
+              notes: document.getElementById('instructions').value.trim()
+            };
           }
-          localStorage.removeItem('mamanpaz_cart_v1');
-          confirmationModal.hidden = false;
-          placeOrder.disabled = true;
+          setSubmitting(true, method === 'delivery' ? 'Checking your delivery details and menu…' : 'Checking the latest menu…');
+          try {
+            if (!pendingOrder && method === 'delivery' && zoneStatus !== 'in-zone') {
+              await updateDeliveryZone();
+              if (zoneStatus !== 'in-zone') throw new Error(deliveryZone.textContent || 'Delivery is unavailable for this postcode.');
+            }
+            if (!pendingOrder) await checkCartAvailability();
+            if (!pendingOrder) {
+              const formData = { name: body.customerName, phone: body.phone, email: body.email };
+              if (method === 'delivery') Object.assign(formData, { street: document.getElementById('street').value, houseNumber: document.getElementById('houseNumber').value, addition: document.getElementById('addressAddition').value, postcode: postcodeField.value, city: cityField.value, country: document.getElementById('country').value });
+              pendingOrder = { body, formData };
+              sessionStorage.setItem(pendingOrderKey, JSON.stringify(pendingOrder));
+            }
+            checkoutProgress.textContent = 'Sending your order securely…';
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 15000);
+            let response, result;
+            try {
+              response = await fetch('/api/orders', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(body), signal: controller.signal });
+              result = await response.json().catch(() => null);
+            } finally { clearTimeout(timeout); }
+            if (!response.ok) {
+              const error = response.status === 404
+                ? 'The ordering service was not found. Open the site through the restaurant server (npm start), then retry.'
+                : result?.error || `The restaurant could not save your order (error ${response.status}).`;
+              if (response.status >= 500 || response.status === 429) throw new Error(`${error} Your request is kept safe; retrying will not create a duplicate.`);
+              pendingOrder = null;
+              sessionStorage.removeItem(pendingOrderKey);
+              sessionStorage.removeItem('mamanpaz_order_request_id');
+              throw new Error(error);
+            }
+            if (!result || !Number.isInteger(Number(result.orderId))) throw new Error('The server response was incomplete. Retry this same order safely to check whether it was saved.');
+            localStorage.removeItem('mamanpaz_cart_v1');
+            sessionStorage.removeItem(pendingOrderKey);
+            sessionStorage.removeItem('mamanpaz_order_request_id');
+            pendingOrder = null;
+            cart = {};
+            orderConfirmed = true;
+            if (rememberDetails.checked) saveRememberedDetails();
+            confirmationModal.querySelector('p').textContent = result.testMode
+              ? `Test order #${result.orderId} has been saved in the test database. It was not sent to the restaurant and no customer email was sent.`
+              : `Your order #${result.orderId} has been saved. The restaurant will confirm it by phone if needed.`;
+            confirmationModal.hidden = false;
+            placeOrder.disabled = true;
+          } catch (error) {
+            showOrderError(error.name === 'AbortError'
+              ? 'The request timed out before we received confirmation. Your cart and details are saved. Use “Retry order safely” to check without creating a duplicate.'
+              : error.message || 'The ordering service is unavailable. Your cart and details are still here; please try again.');
+          } finally {
+            setSubmitting(false);
+            if (pendingOrder) placeOrder.textContent = 'Retry order safely';
+          }
         });
       })();
     </script>

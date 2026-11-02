@@ -3,18 +3,12 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="/icons/logomamanpaz.PNG" type="image/png">
+    <link rel="stylesheet" href="style.css?v=landscape-sidebar-2">
     <title>Reservation | Mamanpaz Maastricht</title>
   </head>
   <body class="menu-page checkout-page reservation-page">
-    <div class="header">
-      <img class="logo" src="icons/logomamanpaz.PNG" alt="Mamanpaz logo">
-      <div class="site-title">
-        <p class="site-name">Mamanpaz Maastricht</p>
-        <p class="site-sub">Authentic Iranian Restaurant</p>
-      </div>
-      <img class="logo" src="icons/logomamanpaz.PNG" alt="Mamanpaz logo">
-    </div>
+    <div class="page-brand"><img src="icons/logomamanpaz.PNG" alt="Mamanpaz Maastricht"></div>
 
     <a class="checkout-back" href="index.html">
       <img class="checkout-back-icon" src="icons/back.svg" alt="">
@@ -25,6 +19,7 @@
       <section class="checkout-card reservation-card" aria-labelledby="reservation-title">
         <h1 id="reservation-title">Make a reservation</h1>
         <p class="checkout-intro">Tell us when you would like to visit and what you are celebrating.</p>
+        <p id="reservationScheduleNotice" class="checkout-notice" role="status"></p>
 
         <h2 class="checkout-section-title">Reservation details</h2>
         <div class="reservation-fields">
@@ -91,18 +86,42 @@
           guestCount.value = nextValue;
         }
 
+        function reservationRequestId() {
+          let id = sessionStorage.getItem('mamanpaz_reservation_request_id');
+          if (!id) { id = crypto.randomUUID ? crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => { const r = Math.random() * 16 | 0; return (c === 'x' ? r : (r & 3 | 8)).toString(16); }); sessionStorage.setItem('mamanpaz_reservation_request_id', id); }
+          return id;
+        }
+
         document.getElementById('guestDecrease').addEventListener('click', () => changeGuestCount(-1));
         document.getElementById('guestIncrease').addEventListener('click', () => changeGuestCount(1));
 
-        const today = new Date();
-        const todayValue = [today.getFullYear(), String(today.getMonth() + 1).padStart(2, '0'), String(today.getDate()).padStart(2, '0')].join('-');
-        dateField.min = todayValue;
-
-        for (let minutes = 16 * 60 + 30; minutes <= 21 * 60 + 45; minutes += 15) {
-          const hours = String(Math.floor(minutes / 60)).padStart(2, '0');
-          const remainder = String(minutes % 60).padStart(2, '0');
-          timeField.insertAdjacentHTML('beforeend', `<option value="${hours}:${remainder}">${hours}:${remainder}</option>`);
+        let businessHours;
+        async function updateReservationTimes() {
+          const date = dateField.value;
+          timeField.innerHTML = '<option value="" selected disabled>Choose a time</option>';
+          if (!date || !businessHours) return;
+          const weekday = new Intl.DateTimeFormat('en-US', { timeZone: 'Europe/Amsterdam', weekday: 'long' }).format(new Date(`${date}T12:00:00Z`)).toLowerCase();
+          const schedule = businessHours[weekday];
+          if (!schedule?.open || !schedule.reservations) {
+            timeField.insertAdjacentHTML('beforeend', '<option value="" disabled>Closed for reservations</option>');
+            document.getElementById('reservationScheduleNotice').textContent = 'The restaurant is closed for reservations on that day.';
+            return;
+          }
+          document.getElementById('reservationScheduleNotice').textContent = 'Reservations are requested and remain pending until staff confirms them.';
+          const [openHour, openMinute] = schedule.opens.split(':').map(Number);
+          const [closeHour, closeMinute] = schedule.closes.split(':').map(Number);
+          for (let minutes = openHour * 60 + openMinute; minutes < closeHour * 60 + closeMinute; minutes += 15) {
+            const hour = String(Math.floor(minutes / 60)).padStart(2, '0');
+            const minute = String(minutes % 60).padStart(2, '0');
+            timeField.insertAdjacentHTML('beforeend', `<option value="${hour}:${minute}">${hour}:${minute}</option>`);
+          }
         }
+        fetch('/api/settings/business-hours').then(response => response.json()).then(data => {
+          businessHours = data.hours;
+          dateField.min = data.todayDate;
+          updateReservationTimes();
+        }).catch(() => { document.getElementById('reservationScheduleNotice').textContent = 'Could not load the restaurant reservation schedule.'; });
+        dateField.addEventListener('change', updateReservationTimes);
 
         submitButton.addEventListener('click', async () => {
           const requiredFields = [...document.querySelectorAll('.reservation-card [required]')];
@@ -116,7 +135,7 @@
             const response = await fetch('/api/reservations', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ name: document.getElementById('reservationName').value.trim(), email: document.getElementById('reservationEmail').value.trim(), phone: document.getElementById('reservationPhone').value.trim(), date: dateField.value, time: timeField.value, guests: Number(guestCount.value), purpose: document.getElementById('reservationPurpose').value, notes: document.getElementById('reservationNotes').value.trim() })
+              body: JSON.stringify({ requestId: reservationRequestId(), name: document.getElementById('reservationName').value.trim(), email: document.getElementById('reservationEmail').value.trim(), phone: document.getElementById('reservationPhone').value.trim(), date: dateField.value, time: timeField.value, guests: Number(guestCount.value), purpose: document.getElementById('reservationPurpose').value, notes: document.getElementById('reservationNotes').value.trim() })
             });
             if (!response.ok) {
               const result = await response.json().catch(() => ({}));
@@ -129,6 +148,7 @@
             submitButton.disabled = false;
             return;
           }
+          sessionStorage.removeItem('mamanpaz_reservation_request_id');
           confirmation.hidden = false;
         });
       })();

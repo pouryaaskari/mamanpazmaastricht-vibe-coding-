@@ -6,7 +6,10 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node --watch server.js"
+    "dev": "node --watch server.js",
+    "staff:password": "node scripts/reset-staff-password.js",
+    "db:prepare-production": "node scripts/prepare-production-database.js",
+    "test": "node --test"
   },
   "dependencies": {
     "better-sqlite3": "^11.8.1",
