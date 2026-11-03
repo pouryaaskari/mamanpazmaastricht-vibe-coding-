@@ -887,7 +887,7 @@ test('postcode allowlisting protects delivery, is staff-managed, and persists ac
   try {
     const oldDatabase = new Database(dbPath);
     oldDatabase.exec('CREATE TABLE restaurant_settings (key TEXT PRIMARY KEY, value TEXT NOT NULL)');
-    oldDatabase.prepare('INSERT INTO restaurant_settings (key, value) VALUES (?, ?)').run('delivery_postcodes', '[]');
+    oldDatabase.prepare('INSERT INTO restaurant_settings (key, value) VALUES (?, ?)').run('delivery_postcodes', JSON.stringify([{ postcode: '6216 AD', country: 'Netherlands' }]));
     oldDatabase.close();
     child = start();
     await ready();
@@ -925,6 +925,7 @@ test('postcode allowlisting protects delivery, is staff-managed, and persists ac
     let cookie = await login();
     const initiallyEmpty = await api('/api/admin/delivery-postcodes', undefined, 'GET', cookie);
     const defaultPostcodes = (await initiallyEmpty.json()).postcodes;
+    assert(defaultPostcodes.some(entry => entry.country === 'Netherlands' && entry.postcode === '6216 AD'), 'existing custom postcodes remain approved');
     assert(defaultPostcodes.some(entry => entry.country === 'Netherlands' && entry.postcode === '6217'));
     assert(defaultPostcodes.some(entry => entry.country === 'Belgium' && entry.postcode === '3620'));
     for (const entry of defaultPostcodes) {

@@ -665,16 +665,16 @@ function seedExistingMenu() {
 
 seedExistingMenu();
 
-if (!db.prepare('SELECT 1 FROM restaurant_settings WHERE key = ?').get('delivery_postcodes_v1_initialized')) {
-  const savedPostcodes = db.prepare('SELECT value FROM restaurant_settings WHERE key = ?').get('delivery_postcodes');
-  if (!savedPostcodes) {
-    saveApprovedDeliveryPostcodes(defaultDeliveryPostcodes);
-  } else {
-    const parsedPostcodes = JSON.parse(savedPostcodes.value);
-    if (!Array.isArray(parsedPostcodes)) throw new Error('Stored delivery postcode configuration is invalid.');
-    if (parsedPostcodes.length === 0) saveApprovedDeliveryPostcodes(defaultDeliveryPostcodes);
-  }
-  db.prepare('INSERT INTO restaurant_settings (key, value) VALUES (?, ?)').run('delivery_postcodes_v1_initialized', 'yes');
+if (!db.prepare('SELECT 1 FROM restaurant_settings WHERE key = ?').get('delivery_postcodes_v2_initialized')) {
+  const savedPostcodes = approvedDeliveryPostcodes();
+  const mergedPostcodes = new Map(
+    [...savedPostcodes, ...defaultDeliveryPostcodes]
+      .map(entry => [`${entry.country}:${entry.postcode}`, entry])
+  );
+  const initializedPostcodes = [...mergedPostcodes.values()]
+    .sort((left, right) => left.country.localeCompare(right.country) || left.postcode.localeCompare(right.postcode));
+  saveApprovedDeliveryPostcodes(initializedPostcodes);
+  db.prepare('INSERT INTO restaurant_settings (key, value) VALUES (?, ?)').run('delivery_postcodes_v2_initialized', 'yes');
 }
 
 // The menu's sauce prices were used as wrap add-on prices; normalize only the
