@@ -893,20 +893,23 @@ test('postcode allowlisting protects delivery, is staff-managed, and persists ac
     assert.equal(unauthenticatedAdd.status, 401, 'unauthorized users cannot add delivery postcodes');
     const unauthenticatedRemove = await api('/api/admin/delivery-postcodes', { postcode: '6217 CT', country: 'Netherlands' }, 'DELETE');
     assert.equal(unauthenticatedRemove.status, 401, 'unauthorized users cannot remove delivery postcodes');
-    const noPostcodes = await eligibility('6217 CT');
-    assert.equal(noPostcodes.response.status, 200);
-    assert.equal(noPostcodes.body.available, false, 'an empty list never approves delivery');
-    assert.match(noPostcodes.body.message, /no delivery postcodes have been configured/i);
+    const defaultDutchPostcode = await eligibility('6217 CT');
+    assert.equal(defaultDutchPostcode.response.status, 200);
+    assert.equal(defaultDutchPostcode.body.available, true, 'the default Dutch postcode prefix approves matching postcodes');
+    const defaultBelgianPostcode = await eligibility('3620', 'Belgium');
+    assert.equal(defaultBelgianPostcode.body.available, true, 'the default Belgian list includes nearby postcode areas');
+    const outsideDefaultArea = await eligibility('6301 AB');
+    assert.equal(outsideDefaultArea.body.available, false, 'postcodes outside the default list remain unavailable');
 
     const menuResponse = await fetch(`${appUrl}/api/menu`).then(response => response.json());
     const item = menuResponse.items.find(menuItem => menuItem.category === 'kebab');
     const deliverySlots = await fetch(`${appUrl}/api/order-slots?type=delivery`).then(response => response.json());
     assert(item && deliverySlots.slots.length, 'test menu and delivery slots are available');
-    const rejectedWithoutConfiguration = await createDeliveryOrder(item, deliverySlots.slots[0], '6217 CT', {
+    const rejectedOutsideDefaultArea = await createDeliveryOrder(item, deliverySlots.slots[0], '6301 AB', {
       approved: true, deliveryApproved: true, postcodeApproved: true
     });
-    assert.equal(rejectedWithoutConfiguration.status, 422, 'direct API approval flags cannot bypass an empty server list');
-    assert.match((await rejectedWithoutConfiguration.json()).error, /no delivery postcodes have been configured/i);
+    assert.equal(rejectedOutsideDefaultArea.status, 422, 'direct API approval flags cannot bypass the server postcode list');
+    assert.match((await rejectedOutsideDefaultArea.json()).error, /do not deliver to this postcode/i);
 
     const missingPostcode = await eligibility('');
     assert.equal(missingPostcode.response.status, 400);
@@ -917,9 +920,31 @@ test('postcode allowlisting protects delivery, is staff-managed, and persists ac
 
     let cookie = await login();
     const initiallyEmpty = await api('/api/admin/delivery-postcodes', undefined, 'GET', cookie);
-    assert.deepEqual((await initiallyEmpty.json()).postcodes, []);
+    const defaultPostcodes = (await initiallyEmpty.json()).postcodes;
+    assert(defaultPostcodes.some(entry => entry.country === 'Netherlands' && entry.postcode === '6217'));
+    assert(defaultPostcodes.some(entry => entry.country === 'Belgium' && entry.postcode === '3620'));
+    for (const entry of defaultPostcodes) {
+      const removed = await api('/api/admin/delivery-postcodes', entry, 'DELETE', cookie);
+      assert.equal(removed.status, 200, 'staff can remove seeded postcode entries');
+    }
+    assert.deepEqual((await (await api('/api/admin/delivery-postcodes', undefined, 'GET', cookie)).json()).postcodes, []);
+    const noPostcodes = await eligibility('6217 CT');
+    assert.equal(noPostcodes.body.available, false, 'an explicitly emptied list stays empty');
+    assert.match(noPostcodes.body.message, /no delivery postcodes have been configured/i);
+    const rejectedWithoutConfiguration = await createDeliveryOrder(item, deliverySlots.slots[0], '6217 CT', {
+      approved: true, deliveryApproved: true, postcodeApproved: true
+    });
+    assert.equal(rejectedWithoutConfiguration.status, 422, 'direct API approval flags cannot bypass an empty server list');
+    assert.match((await rejectedWithoutConfiguration.json()).error, /no delivery postcodes have been configured/i);
     const malformedAdd = await api('/api/admin/delivery-postcodes', { postcode: '12 34 AB', country: 'Netherlands' }, 'POST', cookie);
     assert.equal(malformedAdd.status, 400, 'dashboard API rejects malformed postcodes');
+    const prefixAdded = await api('/api/admin/delivery-postcodes', { postcode: ' 6217 ', country: 'netherlands' }, 'POST', cookie);
+    assert.equal(prefixAdded.status, 201, 'staff can add a four-digit Dutch postcode prefix');
+    assert.deepEqual((await prefixAdded.json()).postcodes, [{ postcode: '6217', country: 'Netherlands' }]);
+    assert.equal((await eligibility('6217 AB')).body.available, true, 'a Dutch prefix approves all postcodes starting with it');
+    assert.equal((await eligibility('6218 AB')).body.available, false, 'a Dutch prefix does not approve a different area');
+    const prefixRemoved = await api('/api/admin/delivery-postcodes', { postcode: '6217', country: 'Netherlands' }, 'DELETE', cookie);
+    assert.equal(prefixRemoved.status, 200, 'staff can remove a Dutch postcode prefix');
     const added = await api('/api/admin/delivery-postcodes', { postcode: ' 6217ct ', country: 'netherlands' }, 'POST', cookie);
     assert.equal(added.status, 201);
     assert.deepEqual((await added.json()).postcodes, [{ postcode: '6217 CT', country: 'Netherlands' }], 'saved postcode is normalized');
@@ -980,7 +1005,7 @@ test('postcode allowlisting protects delivery, is staff-managed, and persists ac
     assert.equal(takeaway.status, 201, 'takeaway orders remain independent of postcode configuration');
 
     const checkoutSource = await fetch(`${appUrl}/checkout.html`).then(response => response.text());
-    assert.match(checkoutSource, /approved delivery areas/);
+    assert.match(checkoutSource, /Delivery availability is checked by postcode area/);
     assert.match(checkoutSource, /\/api\/delivery\/eligibility/);
     assert.doesNotMatch(checkoutSource, /\/api\/delivery\/zone|verificationToken|distanceKm/i, 'checkout no longer uses the distance-verification flow');
 

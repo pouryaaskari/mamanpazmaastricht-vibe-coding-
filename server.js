@@ -58,6 +58,12 @@ const sessions = new Map();
 const sessionMaxAge = 1000 * 60 * 60 * 8;
 const menuCategories = ['kebab', 'stews', 'rice', 'side', 'starters', 'wraps', 'desserts', 'drinks', 'sauces'];
 const businessTimeZone = 'Europe/Amsterdam';
+const defaultDeliveryPostcodes = [
+  ...['6211', '6212', '6213', '6214', '6215', '6216', '6217', '6218', '6219', '6221', '6222', '6223', '6224', '6225', '6226', '6227', '6228', '6229', '6231', '6235', '6237', '6241', '6243', '6245', '6247', '6251', '6252', '6267', '6268', '6325']
+    .map(postcode => ({ country: 'Netherlands', postcode })),
+  ...['3620', '3621', '3630', '3631', '3740', '3742', '3746', '3770', '4600', '4690']
+    .map(postcode => ({ country: 'Belgium', postcode }))
+];
 const wrapSaucePriceCents = 50;
 const orderSlotMinutes = 15;
 const orderScheduleDays = 21;
@@ -157,6 +163,20 @@ function normalizedPostcode(value, country) {
   return '';
 }
 
+function normalizedApprovedPostcode(value, country) {
+  const postcode = cleanText(value, 16).toUpperCase().replace(/\s+/g, ' ');
+  if (country === 'Netherlands' && /^\d{4}$/.test(postcode)) return postcode;
+  return normalizedPostcode(postcode, country);
+}
+
+function deliveryPostcodeIsApproved(postcodes, country, postcode) {
+  return postcodes.some(entry => entry.country === country && (
+    country === 'Netherlands' && /^\d{4}$/.test(entry.postcode)
+      ? postcode.startsWith(entry.postcode)
+      : entry.postcode === postcode
+  ));
+}
+
 function normalizedDeliveryAddress(address) {
   const country = normalizedDeliveryCountry(address.country);
   return {
@@ -179,12 +199,12 @@ function validDeliveryAddress(address) {
 
 function approvedDeliveryPostcodes() {
   const setting = db.prepare('SELECT value FROM restaurant_settings WHERE key = ?').get('delivery_postcodes');
-  if (!setting) return [];
+  if (!setting) return defaultDeliveryPostcodes;
   const saved = JSON.parse(setting.value);
   if (!Array.isArray(saved)) throw new Error('Stored delivery postcode configuration is invalid.');
   return saved.map(entry => {
     const country = normalizedDeliveryCountry(entry?.country);
-    const postcode = normalizedPostcode(entry?.postcode, country);
+    const postcode = normalizedApprovedPostcode(entry?.postcode, country);
     if (!country || !postcode) throw new Error('Stored delivery postcode configuration is invalid.');
     return { country, postcode };
   });
@@ -870,7 +890,7 @@ app.get('/api/admin/delivery-postcodes', requireAdmin, (_req, res) => {
 
 app.post('/api/admin/delivery-postcodes', requireAdmin, (req, res) => {
   const country = normalizedDeliveryCountry(req.body.country);
-  const postcode = normalizedPostcode(req.body.postcode, country);
+  const postcode = normalizedApprovedPostcode(req.body.postcode, country);
   if (!country || !postcode) return res.status(400).json({ error: 'Enter a valid Netherlands or Belgium postcode.' });
   const postcodes = approvedDeliveryPostcodes();
   if (postcodes.some(entry => entry.country === country && entry.postcode === postcode)) {
@@ -884,7 +904,7 @@ app.post('/api/admin/delivery-postcodes', requireAdmin, (req, res) => {
 
 app.delete('/api/admin/delivery-postcodes', requireAdmin, (req, res) => {
   const country = normalizedDeliveryCountry(req.body.country);
-  const postcode = normalizedPostcode(req.body.postcode, country);
+  const postcode = normalizedApprovedPostcode(req.body.postcode, country);
   if (!country || !postcode) return res.status(400).json({ error: 'Select a valid country and postcode to remove.' });
   const postcodes = approvedDeliveryPostcodes();
   const updated = postcodes.filter(entry => entry.country !== country || entry.postcode !== postcode);
@@ -905,7 +925,7 @@ app.post('/api/delivery/eligibility', rateLimit(30, 15 * 60 * 1000), (req, res) 
   if (!postcodes.length) {
     return res.json({ available: false, message: 'Delivery is not available yet because no delivery postcodes have been configured.' });
   }
-  const available = postcodes.some(entry => entry.country === country && entry.postcode === postcode);
+  const available = deliveryPostcodeIsApproved(postcodes, country, postcode);
   res.json({
     available,
     message: available
@@ -975,7 +995,7 @@ app.post('/api/orders', rateLimit(10, 15 * 60 * 1000), async (req, res) => {
     if (!validDeliveryAddress(verifiedAddress)) return res.status(400).json({ error: 'Enter a valid street, house number, postcode, city and supported country for delivery.' });
     const postcodes = approvedDeliveryPostcodes();
     if (!postcodes.length) return res.status(422).json({ error: 'Delivery is not available because no delivery postcodes have been configured yet. Please call the restaurant.' });
-    if (!postcodes.some(entry => entry.country === country && entry.postcode === postcode)) {
+    if (!deliveryPostcodeIsApproved(postcodes, country, postcode)) {
       return res.status(422).json({ error: 'We do not deliver to this postcode. Please choose takeaway or call the restaurant.' });
     }
   }

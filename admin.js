@@ -228,7 +228,7 @@
   function renderDeliveryPostcodes() {
     const list = $('deliveryPostcodeList');
     list.innerHTML = state.deliveryPostcodes.length
-      ? state.deliveryPostcodes.map(item => `<div class="admin-postcode-item"><strong>${escapeHtml(item.postcode)}</strong><span>${escapeHtml(item.country)}</span><button class="admin-secondary" type="button" data-remove-delivery-postcode="${escapeHtml(item.postcode)}" data-delivery-country="${escapeHtml(item.country)}">Remove</button></div>`).join('')
+      ? state.deliveryPostcodes.map(item => `<div class="admin-postcode-item"><strong>${escapeHtml(item.postcode)}${item.country === 'Netherlands' && item.postcode.length === 4 ? '*' : ''}</strong><span>${escapeHtml(item.country)}</span><button class="admin-secondary" type="button" data-remove-delivery-postcode="${escapeHtml(item.postcode)}" data-delivery-country="${escapeHtml(item.country)}">Remove</button></div>`).join('')
       : '<p class="admin-empty">No approved postcodes. Delivery orders remain unavailable until you add one.</p>';
     list.querySelectorAll('[data-remove-delivery-postcode]').forEach(button => button.addEventListener('click', async () => {
       button.disabled = true;

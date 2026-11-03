@@ -115,12 +115,12 @@
           </div>
           <div class="admin-tool admin-postcode-tool">
             <h3>Approved delivery postcodes</h3>
-            <p class="admin-summary">Only customers with a postcode on this list can place delivery orders. The list starts empty; add the areas you serve.</p>
+            <p class="admin-summary">Only customers with an approved postcode can place delivery orders. A four-digit Netherlands entry approves every postcode starting with those digits; a full postcode approves only that postcode. An asterisk marks a four-digit prefix.</p>
             <form id="deliveryPostcodeForm" class="admin-form admin-postcode-form">
               <label for="deliveryPostcodeCountry">Country</label>
               <select id="deliveryPostcodeCountry" required><option value="Netherlands">Netherlands</option><option value="Belgium">Belgium</option></select>
               <label for="deliveryPostcode">Postcode</label>
-              <input id="deliveryPostcode" type="text" maxlength="16" autocomplete="off" placeholder="6217 CT" required>
+              <input id="deliveryPostcode" type="text" maxlength="16" autocomplete="off" placeholder="6217 or 6217 CT" required>
               <button class="events-submit" type="submit">Add postcode</button>
             </form>
             <p id="deliveryPostcodeMessage" class="admin-message" aria-live="polite"></p>
