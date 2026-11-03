@@ -885,6 +885,10 @@ test('postcode allowlisting protects delivery, is staff-managed, and persists ac
     ...extras
   });
   try {
+    const oldDatabase = new Database(dbPath);
+    oldDatabase.exec('CREATE TABLE restaurant_settings (key TEXT PRIMARY KEY, value TEXT NOT NULL)');
+    oldDatabase.prepare('INSERT INTO restaurant_settings (key, value) VALUES (?, ?)').run('delivery_postcodes', '[]');
+    oldDatabase.close();
     child = start();
     await ready();
     const unauthenticatedList = await api('/api/admin/delivery-postcodes', undefined, 'GET');

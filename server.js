@@ -665,6 +665,18 @@ function seedExistingMenu() {
 
 seedExistingMenu();
 
+if (!db.prepare('SELECT 1 FROM restaurant_settings WHERE key = ?').get('delivery_postcodes_v1_initialized')) {
+  const savedPostcodes = db.prepare('SELECT value FROM restaurant_settings WHERE key = ?').get('delivery_postcodes');
+  if (!savedPostcodes) {
+    saveApprovedDeliveryPostcodes(defaultDeliveryPostcodes);
+  } else {
+    const parsedPostcodes = JSON.parse(savedPostcodes.value);
+    if (!Array.isArray(parsedPostcodes)) throw new Error('Stored delivery postcode configuration is invalid.');
+    if (parsedPostcodes.length === 0) saveApprovedDeliveryPostcodes(defaultDeliveryPostcodes);
+  }
+  db.prepare('INSERT INTO restaurant_settings (key, value) VALUES (?, ?)').run('delivery_postcodes_v1_initialized', 'yes');
+}
+
 // The menu's sauce prices were used as wrap add-on prices; normalize only the
 // sauce category once, leaving unrelated menu items and historical orders intact.
 if (!db.prepare('SELECT 1 FROM restaurant_settings WHERE key = ?').get('wrap_sauce_price_v1_initialized')) {
