@@ -7,6 +7,28 @@
     if (!slides.length) return;
     carousel.classList.add('is-running');
 
+    if (carousel.closest('.home-reviews')) {
+      slides.forEach(slide => {
+        const reviewText = slide.querySelector('.review-text');
+        if (!reviewText || slide.querySelector('.review-read-more')) return;
+        const button = document.createElement('button');
+        button.className = 'review-read-more';
+        button.type = 'button';
+        button.textContent = 'Read more';
+        button.setAttribute('aria-expanded', 'false');
+        button.addEventListener('click', () => {
+          const expanded = button.getAttribute('aria-expanded') !== 'true';
+          button.setAttribute('aria-expanded', String(expanded));
+          button.textContent = expanded ? 'Show less' : 'Read more';
+          reviewText.classList.toggle('is-expanded', expanded);
+          slide.classList.toggle('is-expanded-review', expanded);
+          carousel.classList.toggle('review-expanded', expanded);
+          carousel.closest('.home-reviews')?.classList.toggle('has-expanded-review', expanded);
+        });
+        slide.appendChild(button);
+      });
+    }
+
     slides.forEach(slide => {
       const image = slide.querySelector('img');
       if (!image) return;
@@ -47,6 +69,18 @@
     const show = index => {
       const nextIndex = (index + slides.length) % slides.length;
       if (nextIndex === current) return;
+
+      slides.forEach(slide => {
+        slide.classList.remove('is-expanded-review');
+        slide.querySelector('.review-text')?.classList.remove('is-expanded');
+        const readMore = slide.querySelector('.review-read-more');
+        if (readMore) {
+          readMore.setAttribute('aria-expanded', 'false');
+          readMore.textContent = 'Read more';
+        }
+      });
+      carousel.classList.remove('review-expanded');
+      carousel.closest('.home-reviews')?.classList.remove('has-expanded-review');
 
       const outgoingSlide = slides[current];
       const incomingSlide = slides[nextIndex];

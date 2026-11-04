@@ -1,5 +1,5 @@
 (() => {
-  const state = { menu: [], orders: [], reservations: [], inquiries: [], notifications: [], testNotifications: [], deliveryPostcodes: [], hours: null, todayWeekday: '', hasLoaded: false, refreshing: false, notificationGranted: false, notificationSupported: false, soundBlockedNoticeShown: false, emailConfigured: false, emailFailureAnnouncements: new Set(), orderDateFilter: '', reservationDateFilter: '', hoursDirty: false };
+  const state = { menu: [], orders: [], reservations: [], inquiries: [], notifications: [], testNotifications: [], deliveryPostcodes: [], hours: null, todayWeekday: '', hasLoaded: false, refreshing: false, notificationGranted: false, notificationSupported: false, soundBlockedNoticeShown: false, emailConfigured: false, emailFailureAnnouncements: new Set(), activeAlertIds: new Set(), orderStatuses: new Map(), reservationStatuses: new Map(), orderDateFilter: '', reservationDateFilter: '', hoursDirty: false };
   const $ = id => document.getElementById(id);
   const escapeHtml = value => String(value ?? '').replace(/[&<>'"]/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[character]);
 
@@ -174,13 +174,14 @@
     testPanel.hidden = !state.orders.some(order => order.test_mode);
     $('testNotificationList').innerHTML = state.testNotifications.length ? state.testNotifications.map(item => `<details class="admin-test-notification"><summary>#${item.order_id} · ${escapeHtml(item.subject)} · ${escapeHtml(item.created_at)}</summary><p>Would send to: ${escapeHtml(item.intended_recipient || 'no customer email provided')}</p><pre>${escapeHtml(item.body)}</pre></details>`).join('') : '<p class="admin-empty">No test notifications recorded yet.</p>';
     document.querySelectorAll('[data-order-status]').forEach(select => select.addEventListener('change', async () => {
-      try { const reason = select.value === 'rejected' ? (window.prompt('Optional reason for rejecting this order:') || '') : ''; await api(`/api/admin/orders/${select.dataset.orderStatus}`, { method: 'PATCH', body: JSON.stringify({ status: select.value, reason }) }); await loadAll(); }
+      try { const reason = select.value === 'rejected' ? (window.prompt('Optional reason for rejecting this order:') || '') : ''; await api(`/api/admin/orders/${select.dataset.orderStatus}`, { method: 'PATCH', body: JSON.stringify({ status: select.value, reason }) }); if (select.value !== 'new') resolvePendingAlert('order', select.dataset.orderStatus); await loadAll(); }
       catch (error) { window.alert(error.message); await loadAll().catch(() => {}); }
     }));
     document.querySelectorAll('[data-accept-order]').forEach(button => button.addEventListener('click', async () => {
       button.disabled = true;
       try {
         await api(`/api/admin/orders/${button.dataset.acceptOrder}`, { method: 'PATCH', body: JSON.stringify({ status: 'accepted' }) });
+        resolvePendingAlert('order', button.dataset.acceptOrder);
         await loadAll();
       } catch (error) {
         announce(`Could not accept order #${button.dataset.acceptOrder}: ${error.message}`);
@@ -189,7 +190,7 @@
     }));
     document.querySelectorAll('[data-delete-order]').forEach(button => button.addEventListener('click', async () => {
       if (!window.confirm('Remove this order permanently?')) return;
-      try { await api(`/api/admin/orders/${button.dataset.deleteOrder}`, { method: 'DELETE' }); await loadAll(); }
+      try { await api(`/api/admin/orders/${button.dataset.deleteOrder}`, { method: 'DELETE' }); resolvePendingAlert('order', button.dataset.deleteOrder); await loadAll(); }
       catch (error) { window.alert(error.message); }
     }));
   }
@@ -203,12 +204,12 @@
       return `<article class="admin-record admin-reservation-record ${item.status === 'pending' ? 'is-pending' : ''}"><div class="admin-reservation-information"><strong>Reservation #${item.id} · ${escapeHtml(item.reservation_date)} at ${escapeHtml(item.reservation_time)}</strong><p>${Number(item.guests) || 0} guests · ${escapeHtml(item.purpose || 'No purpose provided')}</p><p>${escapeHtml(item.notes || 'No additional notes')}</p><p>Requested ${escapeHtml(item.created_at || '')}${item.rejection_reason ? ` · Reason: ${escapeHtml(item.rejection_reason)}` : ''}</p></div><div class="admin-reservation-customer"><h3>Customer information</h3><p><strong>${escapeHtml(item.name)}</strong> <span class="admin-customer-badge is-${customerType}">${customerTypeLabel}</span></p><p><a href="tel:${escapeHtml(item.phone)}">${escapeHtml(item.phone)}</a></p><p><a href="mailto:${escapeHtml(item.email)}">${escapeHtml(item.email)}</a></p></div><div class="admin-record-actions"><label class="admin-action-label">Status<select data-reservation-status="${item.id}"><option value="pending" ${item.status === 'pending' ? 'selected' : ''}>pending</option><option value="confirmed" ${item.status === 'confirmed' ? 'selected' : ''}>confirmed</option><option value="rejected" ${item.status === 'rejected' ? 'selected' : ''}>rejected</option><option value="cancelled" ${item.status === 'cancelled' ? 'selected' : ''}>cancelled</option></select></label><button class="admin-danger" type="button" data-delete-reservation="${item.id}">Remove</button></div></article>`;
     }).join('') : `<p class="admin-empty">${state.reservationDateFilter ? 'No reservations scheduled for today.' : 'No reservations yet.'}</p>`;
     document.querySelectorAll('[data-reservation-status]').forEach(select => select.addEventListener('change', async () => {
-      try { const reason = select.value === 'rejected' ? (window.prompt('Optional reason for rejecting this reservation:') || '') : ''; await api(`/api/admin/reservations/${select.dataset.reservationStatus}`, { method: 'PATCH', body: JSON.stringify({ status: select.value, reason }) }); await loadAll(); }
+      try { const reason = select.value === 'rejected' ? (window.prompt('Optional reason for rejecting this reservation:') || '') : ''; await api(`/api/admin/reservations/${select.dataset.reservationStatus}`, { method: 'PATCH', body: JSON.stringify({ status: select.value, reason }) }); if (select.value !== 'pending') resolvePendingAlert('reservation', select.dataset.reservationStatus); await loadAll(); }
       catch (error) { window.alert(error.message); await loadAll().catch(() => {}); }
     }));
     document.querySelectorAll('[data-delete-reservation]').forEach(button => button.addEventListener('click', async () => {
       if (!window.confirm('Remove this reservation permanently?')) return;
-      try { await api(`/api/admin/reservations/${button.dataset.deleteReservation}`, { method: 'DELETE' }); await loadAll(); }
+      try { await api(`/api/admin/reservations/${button.dataset.deleteReservation}`, { method: 'DELETE' }); resolvePendingAlert('reservation', button.dataset.deleteReservation); await loadAll(); }
       catch (error) { window.alert(error.message); }
     }));
   }
@@ -344,10 +345,20 @@
 
   let audioContext;
   let activeAlert = [];
+  let alertRepeatTimer = null;
+  let soundPlaybackId = 0;
   function getAudioContext() {
     const Audio = window.AudioContext || window.webkitAudioContext;
     if (!Audio) return null;
-    audioContext ||= new Audio();
+    if (!audioContext || audioContext.state === 'closed') {
+      audioContext = new Audio();
+      audioContext.addEventListener('statechange', () => {
+        if (audioContext.state === 'suspended' && !document.hidden && state.activeAlertIds.size && $('adminSoundEnabled')?.checked) {
+          stopNotificationSound();
+          syncNotificationSound();
+        }
+      });
+    }
     return audioContext;
   }
 
@@ -359,35 +370,20 @@
   }
 
   async function playNotificationSound(test = false) {
-    if (!test && !$('adminSoundEnabled')?.checked) return;
-    if (!audioContext) {
-      if (!test && !state.soundBlockedNoticeShown) {
-        state.soundBlockedNoticeShown = true;
-        announce('Tap Test sound in Notification Settings once to allow sound alerts in this browser.');
-      }
-      return;
-    }
-    if (audioContext.state !== 'running') {
-      try {
-        await audioContext.resume();
-      } catch (_) {
-        if (!state.soundBlockedNoticeShown) announce('Sound is blocked by this browser. Tap Test sound to enable it; visual notifications will still work.');
-        state.soundBlockedNoticeShown = true;
-        return;
-      }
-    }
-    if (audioContext.state !== 'running') {
-      if (!state.soundBlockedNoticeShown) announce('Sound is blocked by this browser. Tap Test sound to enable it; visual notifications will still work.');
-      state.soundBlockedNoticeShown = true;
-      return;
-    }
+    if (!test && (!$('adminSoundEnabled')?.checked || !state.activeAlertIds.size || document.hidden)) return;
+    if (!test && (activeAlert.length || alertRepeatTimer !== null)) return;
+    if (test) stopNotificationSound();
+    const context = getAudioContext();
+    if (!context) throw new Error('Audio playback is not supported by this browser.');
+    if (context.state !== 'running') await context.resume();
+    if (context.state !== 'running') throw new Error('Audio is suspended. Tap Test sound to activate it.');
     state.soundBlockedNoticeShown = false;
-    stopNotificationSound();
-    const start = audioContext.currentTime;
+    const playbackId = ++soundPlaybackId;
+    const start = context.currentTime;
     const duration = 7;
     const end = start + duration;
-    const master = audioContext.createGain();
-    const compressor = audioContext.createDynamicsCompressor();
+    const master = context.createGain();
+    const compressor = context.createDynamicsCompressor();
     const volume = Number($('adminSoundVolume')?.value ?? 100) / 100;
     master.gain.setValueAtTime(volume, start);
     // A restrained limiter keeps the full-level setting clear without clipping.
@@ -402,8 +398,8 @@
         if (noteStart >= end) return;
         const noteEnd = Math.min(noteStart + 0.34, end);
         [[1, 0.62], [2.76, 0.18], [5.4, 0.07]].forEach(([partial, level]) => {
-          const oscillator = audioContext.createOscillator();
-          const envelope = audioContext.createGain();
+          const oscillator = context.createOscillator();
+          const envelope = context.createGain();
           oscillator.type = 'sine';
           oscillator.frequency.setValueAtTime(frequency * partial, noteStart);
           envelope.gain.setValueAtTime(0.0001, noteStart);
@@ -418,20 +414,56 @@
       });
     }
     master.connect(compressor);
-    compressor.connect(audioContext.destination);
+    compressor.connect(context.destination);
     const alertOscillators = activeAlert;
     let remaining = alertOscillators.length;
     alertOscillators.forEach(oscillator => oscillator.addEventListener('ended', () => {
       remaining -= 1;
-      if (activeAlert === alertOscillators && remaining === 0) activeAlert = [];
+      if (remaining !== 0 || activeAlert !== alertOscillators || playbackId !== soundPlaybackId) return;
+      activeAlert = [];
+      const shouldRepeat = $('adminSoundEnabled')?.checked && state.activeAlertIds.size > 0 && !document.hidden;
+      if (shouldRepeat) {
+        alertRepeatTimer = window.setTimeout(() => {
+          alertRepeatTimer = null;
+          playNotificationSound().catch(reportSoundFailure);
+        }, 700);
+      }
     }, { once: true }));
   }
 
+  function reportSoundFailure(error) {
+    console.error('Could not play the dashboard notification sound.', error);
+    if (!state.soundBlockedNoticeShown) {
+      announce('Sound could not play. Tap Test sound in Notification Settings to activate audio for this browser.');
+    }
+    state.soundBlockedNoticeShown = true;
+    const message = $('notificationSettingsMessage');
+    if (message) message.textContent = 'Sound is blocked or suspended. Tap Test sound to activate it; visual notifications will continue.';
+  }
+
   function stopNotificationSound() {
-    activeAlert.forEach(oscillator => {
+    soundPlaybackId += 1;
+    if (alertRepeatTimer !== null) window.clearTimeout(alertRepeatTimer);
+    alertRepeatTimer = null;
+    const oscillators = activeAlert;
+    activeAlert = [];
+    oscillators.forEach(oscillator => {
       try { oscillator.stop(); } catch (error) { if (error.name !== 'InvalidStateError') throw error; }
     });
-    activeAlert = [];
+  }
+
+  function syncNotificationSound() {
+    if (!state.activeAlertIds.size || !$('adminSoundEnabled')?.checked) {
+      stopNotificationSound();
+      return;
+    }
+    if (document.hidden || state.soundBlockedNoticeShown || activeAlert.length || alertRepeatTimer !== null) return;
+    playNotificationSound().catch(reportSoundFailure);
+  }
+
+  function resolvePendingAlert(type, id) {
+    state.activeAlertIds.delete(`${type}:${id}`);
+    syncNotificationSound();
   }
 
   function updateBrowserNotificationStatus() {
@@ -450,17 +482,52 @@
           : 'Browser notifications are off. Enable them here when prompted.';
   }
 
-  function notifyNewRecords(previous, next) {
-    if (!state.hasLoaded) return;
-    const found = [
-      ...next.orders.filter(item => item.status === 'new' && !previous.orders.some(old => old.id === item.id)).map(item => `New ${item.type === 'delivery' ? 'delivery' : 'takeaway'} order #${item.id}`),
-      ...next.reservations.filter(item => item.status === 'pending' && !previous.reservations.some(old => old.id === item.id)).map(item => `New reservation #${item.id}`)
-    ];
-    if (found.length) {
-      announce(found.join(' · '));
-      playNotificationSound();
-      if (state.notificationGranted) found.forEach(sendBrowserNotification);
+  function notifyNewRecords(next) {
+    const newlyPending = [];
+    const currentPending = new Set();
+    const orderStatuses = new Map();
+    const reservationStatuses = new Map();
+
+    next.orders.forEach(item => {
+      const id = String(item.id);
+      const status = item.status || 'new';
+      orderStatuses.set(id, status);
+      if (status !== 'new') return;
+      const key = `order:${id}`;
+      currentPending.add(key);
+      if (state.hasLoaded && state.orderStatuses.get(id) !== 'new') {
+        newlyPending.push({ key, message: `New ${item.type === 'delivery' ? 'delivery' : 'takeaway'} order #${item.id}` });
+      }
+    });
+
+    next.reservations.forEach(item => {
+      const id = String(item.id);
+      const status = item.status || 'pending';
+      reservationStatuses.set(id, status);
+      if (status !== 'pending') return;
+      const key = `reservation:${id}`;
+      currentPending.add(key);
+      if (state.hasLoaded && state.reservationStatuses.get(id) !== 'pending') {
+        newlyPending.push({ key, message: `New reservation #${item.id}` });
+      }
+    });
+
+    if (!state.hasLoaded) {
+      state.activeAlertIds.clear();
+    } else {
+      state.activeAlertIds.forEach(id => {
+        if (!currentPending.has(id)) state.activeAlertIds.delete(id);
+      });
+      newlyPending.forEach(({ key }) => state.activeAlertIds.add(key));
     }
+
+    state.orderStatuses = orderStatuses;
+    state.reservationStatuses = reservationStatuses;
+    if (newlyPending.length) {
+      announce(newlyPending.map(item => item.message).join(' · '));
+      if (state.notificationGranted) newlyPending.forEach(({ message }) => sendBrowserNotification(message));
+    }
+    syncNotificationSound();
   }
 
   function sendBrowserNotification(message) {
@@ -487,7 +554,6 @@
     if (state.refreshing) return;
     state.refreshing = true;
     try {
-    const previous = { orders: state.orders, reservations: state.reservations, inquiries: state.inquiries };
     const [menu, orders, reservations, inquiries, delivery, postcodes, business, notifications] = await Promise.all([api('/api/admin/menu'), api('/api/admin/orders'), api('/api/admin/reservations'), api('/api/admin/event-inquiries'), api('/api/settings/delivery'), api('/api/admin/delivery-postcodes'), api('/api/settings/business-hours'), api('/api/admin/notifications')]);
     state.menu = menu.items;
     state.orders = orders.orders;
@@ -503,7 +569,7 @@
     $('deliveryOpen').checked = delivery.open;
     renderBusinessHours(business.hours);
     renderOverview(); renderMenu(); renderOrders(); renderReservations(); renderInquiries(); renderEmailQueue(); renderEmailFailures(); renderDeliveryPostcodes();
-    notifyNewRecords(previous, { orders: state.orders, reservations: state.reservations, inquiries: state.inquiries });
+    notifyNewRecords({ orders: state.orders, reservations: state.reservations, inquiries: state.inquiries });
     state.hasLoaded = true;
     setLiveStatus(`Live updates up to date · checked ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`, false);
     } catch (error) {
@@ -515,9 +581,21 @@
   function setup() {
     $('adminLoginForm').addEventListener('submit', async event => {
       event.preventDefault();
+      const soundEnabled = $('adminSoundEnabled').checked;
+      const soundActivation = soundEnabled
+        ? enableNotificationAudio().catch(error => {
+          console.error('Could not activate dashboard notification audio.', error);
+          return false;
+        })
+        : Promise.resolve(false);
       try {
         const result = await api('/api/auth/login', { method: 'POST', body: JSON.stringify({ username: $('adminUsername').value, password: $('adminPassword').value }) });
-        showDashboard(); await loadAll();
+        showDashboard();
+        if (soundEnabled && !await soundActivation) {
+          $('notificationSettings').hidden = false;
+          $('notificationSettingsMessage').textContent = 'Tap Test sound once to activate audio alerts in this browser. New orders and reservations will use the sound setting and volume below.';
+        }
+        await loadAll();
       } catch (error) { $('loginMessage').textContent = error.message; }
     });
     $('logoutAdmin').addEventListener('click', async () => { await api('/api/auth/logout', { method: 'POST' }).catch(() => {}); showLogin(); });
@@ -636,6 +714,7 @@
         $('notificationSettingsMessage').textContent = enabled
           ? 'Sound alerts are on.'
           : 'Sound is blocked by this browser. Use Test sound after interacting with the page.';
+        if (enabled) syncNotificationSound();
       } catch (error) {
         $('notificationSettingsMessage').textContent = `Sound could not be enabled: ${error.message}`;
       }
@@ -674,7 +753,15 @@
     window.addEventListener('beforeinstallprompt', event => { event.preventDefault(); installPrompt = event; $('installDashboard').hidden = false; });
     $('installDashboard').addEventListener('click', async () => { if (!installPrompt) return; installPrompt.prompt(); await installPrompt.userChoice; installPrompt = null; $('installDashboard').hidden = true; });
 
-    api('/api/admin/me').then(async () => { showDashboard(); await loadAll(); }).catch(() => showLogin());
+    api('/api/admin/me').then(async () => {
+      showDashboard();
+      await loadAll();
+      if ($('adminSoundEnabled').checked && (!audioContext || audioContext.state !== 'running')) {
+        $('notificationSettings').hidden = false;
+        $('notificationSettingsMessage').textContent = 'Tap Test sound once to activate order and reservation alerts in this browser.';
+        $('testAdminSound').focus();
+      }
+    }).catch(() => showLogin());
     window.setInterval(() => { if (!document.hidden && !$('adminDashboard').hidden) loadAll().catch(() => {}); }, 8000);
     window.addEventListener('offline', () => setLiveStatus('Offline · live updates paused', true));
     window.addEventListener('online', () => {
@@ -685,7 +772,10 @@
     document.addEventListener('visibilitychange', () => {
       if ($('adminDashboard').hidden) return;
       if (document.hidden) setLiveStatus('Live updates paused · dashboard hidden', true);
-      else loadAll().catch(() => {});
+      else {
+        if (audioContext && audioContext.state !== 'running' && state.activeAlertIds.size) stopNotificationSound();
+        loadAll().catch(() => {});
+      }
     });
   }
 

@@ -2,10 +2,10 @@
 <html lang="en">
   <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <link rel="icon" href="/icons/logomamanpaz.PNG" type="image/png">
   <meta name="description" content="Explore the MamanPaz Maastricht menu: authentic Iranian dishes, sides, desserts and drinks.">
-  <link rel="stylesheet" href="style.css?v=menu-availability-checkout-3">
+  <link rel="stylesheet" href="style.css?v=notification-forms-ui-5">
         <title>Mamanpaz Iraans Restaurant</title>
       <link rel="preconnect" href="https://fonts.googleapis.com">
       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -305,7 +305,7 @@
           <div class="menu-item"><div class="menu-item-row"><div class="menu-item-title-wrap"><img class="menu-item-image" src="menu/optimized/bbq-saus.png" alt="سس باربیکیو" loading="lazy"><strong><span class="item-en">BBQ saus</span><span class="item-fa">سس باربیکیو</span></strong></div><span class="price">0,50 EUR <button class="order-btn">+</button></span></div></div>
         </section>
         </div>
-        <div class="cart-summary" id="cartSummary">
+        <div class="cart-summary is-empty" id="cartSummary">
           <button id="cartToggle" aria-expanded="false" class="left-cart-btn">
             <img class="button-icon" src="icons/cart.svg" alt="">
             <span class="cart-label">Checkout</span>
@@ -330,8 +330,8 @@
         (function(){
           const tabs = document.querySelectorAll('.menu-tabs .tab');
           const sections = document.querySelectorAll('.menu-section');
+          const menuContent = document.querySelector('.center-body');
 
-          // Click -> smooth scroll and set active
           tabs.forEach(tab => {
             tab.addEventListener('click', () => {
               const id = tab.dataset.target;
@@ -339,10 +339,10 @@
               if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
               tabs.forEach(t=>t.classList.remove('active'));
               tab.classList.add('active');
+              tab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
             });
           });
 
-          // Observe sections to update active tab on scroll
           const observer = new IntersectionObserver((entries)=>{
             entries.forEach(entry => {
               if (entry.isIntersecting) {
@@ -351,10 +351,11 @@
                 if (activeTab) {
                   tabs.forEach(t=>t.classList.remove('active'));
                   activeTab.classList.add('active');
+                  activeTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
                 }
               }
             });
-          }, { root: null, rootMargin: '-20% 0px -50% 0px', threshold: 0 });
+          }, { root: menuContent, rootMargin: '-8% 0px -70% 0px', threshold: 0 });
 
           sections.forEach(s => observer.observe(s));
 
@@ -421,6 +422,8 @@
             const count = cartCount();
             const countEl = cartToggle.querySelector('.cart-count-num');
             if(countEl) countEl.textContent = count;
+            document.getElementById('cartSummary').classList.toggle('is-empty', count === 0);
+            cartToggle.setAttribute('aria-label', count ? `View cart, ${count} items` : 'Cart is empty');
             cartItemsEl.innerHTML = '';
             for(const key of Object.keys(cart)){
               const it = cart[key];
@@ -643,6 +646,6 @@
           cartPanel.style.display = 'none';
         })();
       </script>
-      <script src="site.js"></script>
+      <script src="site.js?v=glass-nav-4"></script>
     </body>
 </html>
